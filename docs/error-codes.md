@@ -1,14 +1,16 @@
 # Error Codes
 
-## 1001 Template has no template declaration
+## Template Errors (10xx)
 
-Each template must have a scope declaration
+### 1001 Template has no template declaration
+
+Each template must have a template declaration
   
 ```
 <?template scope="application"?>
 ```
 
-## 1002 Template declaration has no scope attribute
+### 1002 Template declaration has no scope attribute
 
 A template must have a scope attribute
   

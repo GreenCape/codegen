@@ -4,13 +4,13 @@ namespace GreenCape\CodeGen;
 
 class Generator
 {
-    private $configuration;
+    private $project;
     private $templatePath;
     private $outputPath;
 
-    public function project($configuration): Generator
+    public function project(Project $project): Generator
     {
-        $this->configuration = $configuration;
+        $this->project = $project;
 
         return $this;
     }
@@ -36,6 +36,8 @@ class Generator
 
     public function generate()
     {
+        $context = $this->project->properties;
+
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {
             $source = $info->getPathname();
@@ -46,7 +48,6 @@ class Generator
                 continue;
             }
 
-            $context = get_object_vars($this->configuration);
             file_put_contents($destination, (new Template($source))->render($context));
         }
     }
@@ -75,7 +76,7 @@ class Generator
     {
         $replace = [
             $this->templatePath => $this->outputPath,
-            '{{project}}' => $this->configuration->name,
+            '{{project}}' => $this->project->name,
         ];
         $destination = str_replace(array_keys($replace), array_values($replace), $source);
         return $destination;

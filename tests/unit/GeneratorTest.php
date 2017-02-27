@@ -60,15 +60,15 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProjectNameIsReplaced()
     {
-        $configuration = json_decode(file_get_contents($this->projectFile));
+        $project = new \GreenCape\CodeGen\Project($this->projectFile);
 
         (new \GreenCape\CodeGen\Generator())
-            ->project($configuration)
+            ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
 
-        $outputDir = $this->outputDir . '/' . $configuration->name;
+        $outputDir = $this->outputDir . '/' . $project->name;
 
         $this->assertDirectoryExists($outputDir);
     }
@@ -78,19 +78,19 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testConfigValuesAreReplaced()
     {
-        $configuration = json_decode(file_get_contents($this->projectFile));
+        $project = new \GreenCape\CodeGen\Project($this->projectFile);
 
         (new \GreenCape\CodeGen\Generator())
-            ->project($configuration)
+            ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
 
-        $outputDir = $this->outputDir . '/' . $configuration->name;
+        $outputDir = $this->outputDir . '/' . $project->name;
 
         $readme = file_get_contents($outputDir . '/README.md');
 
-        $this->assertContains('# ' . $configuration->title, $readme);
+        $this->assertContains('# ' . $project->title, $readme);
     }
 
 
@@ -99,15 +99,15 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testTemplateDirectiveIsRemoved()
     {
-        $configuration = json_decode(file_get_contents($this->projectFile));
+        $project = new \GreenCape\CodeGen\Project($this->projectFile);
 
         (new \GreenCape\CodeGen\Generator())
-            ->project($configuration)
+            ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
 
-        $outputDir = $this->outputDir . '/' . $configuration->name;
+        $outputDir = $this->outputDir . '/' . $project->name;
 
         $readme = file_get_contents($outputDir . '/README.md');
 
