@@ -1,0 +1,19 @@
+{
+    "name": "greencape/codegen",
+    "description": "A generic template based code generator",
+    "type": "tool",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Braczek",
+            "email": "nbraczek@bsds.de"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "twig/twig": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    }
+}
