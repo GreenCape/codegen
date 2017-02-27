@@ -26,15 +26,18 @@ class Generator
     {
         $this->outputPath = $path;
 
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        if (is_dir($path)) {
+            `rm -rf $path`;
         }
+        mkdir($path, 0777, true);
 
         return $this;
     }
 
     public function generate()
     {
+        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem([$this->templatePath]));
+
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {
             $source = $info->getPathname();
@@ -45,7 +48,6 @@ class Generator
                 continue;
             }
 
-            $twig = new \Twig_Environment(new \Twig_Loader_Filesystem([$this->templatePath]));
             $context = get_object_vars($this->configuration);
             file_put_contents($destination, $twig->render(str_replace($this->templatePath, '', $source), $context));
         }
