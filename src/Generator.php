@@ -36,8 +36,6 @@ class Generator
 
     public function generate()
     {
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem([$this->templatePath]));
-
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {
             $source = $info->getPathname();
@@ -49,7 +47,7 @@ class Generator
             }
 
             $context = get_object_vars($this->configuration);
-            file_put_contents($destination, $twig->render(str_replace($this->templatePath, '', $source), $context));
+            file_put_contents($destination, (new Template($source))->render($context));
         }
     }
 

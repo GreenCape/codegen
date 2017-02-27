@@ -2,103 +2,62 @@
 
 class TemplateTest extends \PHPUnit\Framework\TestCase
 {
-    private $projectFile;
-
     private $templateDir;
-
-    private $outputDir;
 
     public function setUp()
     {
         $basePath = dirname(__DIR__);
 
-        $this->projectFile = $basePath . '/fixtures/project1.json';
-        $this->templateDir = $basePath . '/fixtures/template1';
-        $this->outputDir = $basePath . '/tmp';
-    }
-
-    public function tearDown()
-    {
-        if (is_dir($this->outputDir))
-        {
-            `rm -rf $this->outputDir`;
-        }
+        $this->templateDir = $basePath . '/fixtures';
     }
 
     /**
-     * @testdox The fixtures required by the tests are available
+     * @testdox The template scope is recognized
      */
-    public function testFixturesExist()
+    public function testGetScope()
     {
-        $this->assertFileExists($this->projectFile);
-        $this->assertDirectoryExists($this->templateDir);
+        $template = new \GreenCape\CodeGen\Template($this->templateDir . '/template1/{{project}}/README.md');
+
+        $this->assertEquals('application', $template->getScope());
     }
 
     /**
-     * @testdox Output directory is created automatically
+     * @testdox An exception (1001) is thrown, if the template directive is missing from a template
      */
-    public function testGeneratesOutputDirectory()
+    public function testExceptionOnMissingDeclaration()
     {
-        $generator = new \GreenCape\CodeGen\Generator();
-        $generator
-            ->output($this->outputDir);
+        $this->expectExceptionCode(1001);
 
-        $this->assertDirectoryExists($this->outputDir);
+        new \GreenCape\CodeGen\Template($this->templateDir . '/template0/missing-declaration.tpl');
     }
 
     /**
-     * @testdox Output directory is cleared, if it already exists
+     * @testdox An exception (1002) is thrown, if the template directive does not have a scope attribute
      */
-    public function testClearsOutputDirectory()
+    public function testExceptionOnMissingScope()
     {
-        $testDir = $this->outputDir . '/test_project_1';
-        $testFile = $testDir . '/should_not_be.here';
+        $this->expectExceptionCode(1002);
 
-        mkdir($testDir, 0777, true);
-        touch($testFile);
-
-        $generator = new \GreenCape\CodeGen\Generator();
-        $generator
-            ->output($this->outputDir);
-
-        $this->assertFileNotExists($testFile);
+        new \GreenCape\CodeGen\Template($this->templateDir . '/template0/missing-scope.tpl');
     }
 
     /**
-     * @testdox Placeholder {{project}} in the path is replaced with the project name
+     * @testdox Template condition is empty, if not declared
      */
-    public function testProjectNameIsReplaced()
+    public function testGetEmptyCondition()
     {
-        $configuration = json_decode(file_get_contents($this->projectFile));
+        $template = new \GreenCape\CodeGen\Template($this->templateDir . '/template1/{{project}}/README.md');
 
-        (new \GreenCape\CodeGen\Generator())
-            ->project($configuration)
-            ->template($this->templateDir)
-            ->output($this->outputDir)
-            ->generate();
-
-        $outputDir = $this->outputDir . '/' . $configuration->name;
-
-        $this->assertDirectoryExists($outputDir);
+        $this->assertEquals('', $template->getCondition());
     }
 
     /**
-     * @testdox Configuration values from the project JSON file are replaced
+     * @testdox Template conditions are recognized
      */
-    public function testConfigValuesAreReplaced()
+    public function testGetCondition()
     {
-        $configuration = json_decode(file_get_contents($this->projectFile));
+        $template = new \GreenCape\CodeGen\Template($this->templateDir . '/template0/with-condition.tpl');
 
-        (new \GreenCape\CodeGen\Generator())
-            ->project($configuration)
-            ->template($this->templateDir)
-            ->output($this->outputDir)
-            ->generate();
-
-        $outputDir = $this->outputDir . '/' . $configuration->name;
-
-        $readme = file_get_contents($outputDir . '/README.md');
-
-        $this->assertContains('# ' . $configuration->title, $readme);
+        $this->assertEquals('hasKey()', $template->getCondition());
     }
 }

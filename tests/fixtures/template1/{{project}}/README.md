@@ -1,3 +1,4 @@
+<?template scope="application"?>
 # {{title}}
 
 {{description}}
