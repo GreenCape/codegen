@@ -10,6 +10,11 @@
         }
     ],
     "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "GreenCape\\CodeGen\\": "src"
+        }
+    },
     "require": {
         "twig/twig": "^2.2"
     },

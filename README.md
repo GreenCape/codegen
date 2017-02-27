@@ -2,6 +2,6 @@
 
 A generic template based code generator
 
-# License
+## License
 
 [MIT License](LICENSE)
