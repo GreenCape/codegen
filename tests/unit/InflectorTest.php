@@ -67,6 +67,16 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['table']));
     }
 
+    /**
+     * @dataProvider inflectionData
+     * @param $filter
+     * @param $expected
+     */
+    public function testConvertFromDashTo($filter, $expected)
+    {
+        $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['dash']));
+    }
+
     public function numerationData()
     {
         return [
