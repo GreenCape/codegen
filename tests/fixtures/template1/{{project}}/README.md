@@ -1,14 +1,14 @@
 <?template scope="application"?>
-# {{title}}
+# {{ project.title }}
 
-{{description}}
+{{ project.description }}
 
 ## Author
 
-{% for author in authors %}
-{{author.name}} <{{author.email}}>
+{% for author in project.authors %}
+{{ author.name | title }} <{{ author.email | lower }}>
 {% endfor %}
 
 ## License
 
-{{license}}
+{{ project.license }}

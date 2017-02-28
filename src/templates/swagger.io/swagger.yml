@@ -1,0 +1,55 @@
+<?template scope="application"?>
+swagger: '2.0'
+info:
+  title: {{ project.title }}
+  description: {{ project.description }}
+  version: "{{ project.version }}"
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+{% for entity in entities %}
+  /{{ entity.name | plural | dash }}:
+    get:
+      summary: {{ entity.name | plural | title  }}
+      description: |
+        The {{ entity.name | plural | title }} endpoint returns information about the {{ entity.name | plural | title | lower }}.
+        The response includes the display name and other details about each {{ entity.name | singular | title | lower }},
+        and lists the {{ entity.name | plural | title | lower }} in the proper display order.
+      tags:
+        - {{ entity.name | plural | title }}
+      responses:
+        200:
+          description: An array of {{ entity.name | plural | title | lower }}
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/{{ entity.name | singular | class }}'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+{% endfor %}
+definitions:
+{% for entity in entities %}
+  {{ entity.name | singular | class }}:
+    type: object
+    properties:
+{% for property in entity.properties %}
+      {{ property.name }}:
+        type: {{ property.type }}
+        description: {{ property.description }}
+{% endfor %}
+{% endfor %}
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

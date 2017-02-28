@@ -36,7 +36,10 @@ class Generator
 
     public function generate()
     {
-        $context = $this->project->properties;
+        $context = [
+            'project' => $this->project->properties,
+            'entities' => $this->project->entities,
+        ];
 
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {

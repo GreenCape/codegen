@@ -1,0 +1,112 @@
+{
+  "name": "Article",
+  "storage": {
+    "type": "default",
+    "table": "articles"
+  },
+  "properties": [
+    {
+      "name": "id",
+      "type": "id",
+      "label": "JGLOBAL_FIELD_ID_LABEL",
+      "description": "JGLOBAL_FIELD_ID_DESC",
+      "hint": "JGLOBAL_FIELD_ID_HINT",
+      "default": "null",
+      "validation": [
+        {
+          "rule": "positive",
+          "value": "1"
+        },
+        {
+          "rule": "integer",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "name": "title",
+      "type": "title",
+      "label": "JGLOBAL_TITLE",
+      "description": "JGLOBAL_TITLE_DESC",
+      "hint": "JGLOBAL_TITLE_HINT",
+      "validation": [
+        {
+          "rule": "maxlen",
+          "value": "64"
+        }
+      ]
+    },
+    {
+      "name": "category",
+      "type": "text",
+      "label": "COM_ARTICLE_FIELD_CATEGORY_LABEL",
+      "description": "COM_ARTICLE_FIELD_CATEGORY_DESC",
+      "hint": "COM_ARTICLE_FIELD_CATEGORY_HINT"
+    },
+    {
+      "name": "alias",
+      "type": "text",
+      "label": "JGLOBAL_FIELD_ALIAS_LABEL",
+      "description": "JGLOBAL_FIELD_ALIAS_DESC",
+      "hint": "JGLOBAL_FIELD_ALIAS_HINT"
+    },
+    {
+      "name": "teaser",
+      "type": "richtext",
+      "label": "COM_CONTENT_FIELD_ARTICLETEXT_LABEL",
+      "description": "COM_CONTENT_FIELD_ARTICLETEXT_DESC",
+      "hint": "COM_CONTENT_FIELD_ARTICLETEXT_HINT"
+    },
+    {
+      "name": "image",
+      "type": "path",
+      "label": "COM_ARTICLE_FIELD_IMAGE_LABEL",
+      "description": "COM_ARTICLE_FIELD_IMAGE_DESC",
+      "hint": "COM_ARTICLE_FIELD_IMAGE_HINT"
+    },
+    {
+      "name": "body",
+      "type": "richtext",
+      "label": "COM_CONTENT_FIELD_ARTICLETEXT_LABEL",
+      "description": "COM_CONTENT_FIELD_ARTICLETEXT_DESC",
+      "hint": "COM_CONTENT_FIELD_ARTICLETEXT_HINT"
+    },
+    {
+      "name": "author",
+      "type": "text",
+      "label": "COM_CONTENT_FIELD_CREATED_BY_ALIAS_LABEL",
+      "description": "COM_CONTENT_FIELD_CREATED_BY_ALIAS_DESC",
+      "hint": "COM_CONTENT_FIELD_CREATED_BY_ALIAS_HINT"
+    },
+    {
+      "name": "license",
+      "type": "text",
+      "label": "JFIELD_META_RIGHTS_LABEL",
+      "description": "JFIELD_META_RIGHTS_DESC",
+      "hint": "JFIELD_META_RIGHTS_HINT",
+      "validation": [
+        {
+          "rule": "regex",
+          "value": "copy(right|left)"
+        }
+      ]
+    }
+  ],
+  "relations": {
+    "belongsTo": [
+      {
+        "name": "parent_id",
+        "entity": "Article",
+        "label": "JFIELD_PARENT_LABEL",
+        "description": "JFIELD_PARENT_DESC"
+      }
+    ],
+    "hasMany": [
+      {
+        "name": "children",
+        "entity": "Article",
+        "reference": "parent_id"
+      }
+    ]
+  }
+}

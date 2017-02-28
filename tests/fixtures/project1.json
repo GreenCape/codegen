@@ -1,6 +1,7 @@
 {
   "name": "test_project_1",
   "title": "Test Project 1",
+  "version": "1.0.0",
   "description": "A dummy test project",
   "type": "test",
   "license": "MIT",
