@@ -7,7 +7,9 @@
  *
  * @version    1.0.0
  * @package    UnitTest
- * @author     Niels Braczek <nbraczek@bsds.de>
+{% for author in project.authors %}
+ * @author     {{ author.name }} <{{ author.email | lower }}>
+{% endfor %}
  * @copyright  Copyright (C)2012 BSDS Braczek Software- und DatenSysteme. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */

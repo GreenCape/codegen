@@ -10,7 +10,7 @@
  * @version    {{ project.version }}
  * @package    {{ project.name | class }}.UnitTest
  * @author     {{ author.name }} <{{ author.email | lower }}>
- * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ project.copyright }}. All rights reserved.
  * @license    {{ project.license }}
 {# endalign #}
  */

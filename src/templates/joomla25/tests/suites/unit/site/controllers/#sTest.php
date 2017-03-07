@@ -9,8 +9,10 @@
 {# align("\t", '  ') #}
  * @version    {{ project.version }}
  * @package    {{ project.name | class }}.UnitTest
+{% for author in project.authors %}
  * @author     {{ author.name }} <{{ author.email | lower }}>
- * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+{% endfor %}
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ project.copyright }}. All rights reserved.
  * @license    {{ project.license }}
 {# endalign #}
  */
@@ -22,12 +24,10 @@ require_once SOURCE_DIR . '/site/controllers/{{ entity.name | plural | file }}.p
  * Tests for {{ entity.name | plural | class }} Frontend Controller
  *
 {# align("\t", '  ') #}
-
  * @version    Release: {{ project.version }}
  * @package    {{ project.name | class }}.UnitTest
  * @since      1.0.0
 {# endalign #}
-
  */
 class {{ project.name | class }}Controller{{ entity.name | plural | class }}Test extends PHPUnit_Framework_TestCase
 {
