@@ -1,0 +1,119 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * {{ project.title }} Install Package Description
+ *
+ * PHP version 5.3
+ *
+{# align("\t", '  ') #}
+ * @version    {{ project.version }}
+ * @package    {{ project.name | class }}
+ * @author     {{ author.name }} <{{ author.email | lower }}>
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+ * @license    {{ project.license }}
+{# endalign #}
+ */
+-->
+<extension type="component" version="2.5.0" method="upgrade">
+	<name>{{ project.name | class }}</name>
+	<author>Niels Braczek</author>
+	<creationDate>{{ "now" | date('M Y') }}</creationDate>
+	<copyright>(C){{ "now" | date('Y') }} {{ project.copyright }}. All rights reserved.</copyright>
+	<license>{{ project.license }}</license>
+	<authorEmail>nbraczek@bsds.de</authorEmail>
+	<authorUrl>www.bsds.de</authorUrl>
+	<version>{{ project.version }}</version>
+	<description>COM_{{ project.name | constant }}_XML_DESCRIPTION</description>
+
+	<scriptfile>install.php</scriptfile>
+
+	<install>
+		<sql><file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file></sql>
+		<sql><file driver="mysqli" charset="utf8">sql/install.mysql.utf8.sql</file></sql>
+	</install>
+
+	<uninstall>
+		<sql><file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file></sql>
+		<sql><file driver="mysqli" charset="utf8">sql/uninstall.mysql.utf8.sql</file></sql>
+	</uninstall>
+
+	<files folder="site">
+		<filename>{{ project.name | file }}.php</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<filename>metadata.xml</filename>
+		<filename>router.php</filename>
+		<folder>assets</folder>
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.com_{{ project.name | file }}.ini</language>
+		<language tag="de-DE">de-DE/de-DE.com_{{ project.name | file }}.ini</language>
+	</languages>
+
+	<administration>
+
+		<menu img="class:{{ project.name | file }}"
+			  alt="{{ project.name | class }}">COM_{{ project.name | constant }}</menu>
+
+		<submenu>
+{% for entity in project.entities %}
+{% if entity.role == 'main' %}
+
+			<menu link="option=com_{{ project.name | file }}&amp;view={{ entity.name | plural | file }}" view="{{ entity.name | plural | file }}"
+				  img="class:{{ entity.name | singular | file }}"
+				  alt="{{ project.name | class }}/{{ entity.name | plural | class }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}</menu>
+{% if entity.special.category %}
+
+			<menu link="option=com_categories&amp;extension=com_{{ project.name | file }}"
+				  img="class:{{ entity.name | singular | file }}-category"
+				  alt="{{ project.name | class }}/categories">COM_{{ project.name | constant }}_{{ entity.name | constant }}_CATEGORIES</menu>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% for entity in project.entities %}
+{% if entity.role != 'main' and entity.role != 'map' and entity.role != 'lookup' %}
+
+			<menu link="option=com_{{ project.name | file }}&amp;view={{ entity.name | plural | file }}" view="{{ entity.name | plural | file }}"
+				  img="class:{{ entity.name | singular | file }}"
+				  alt="{{ project.name | class }}/{{ entity.name | plural | class }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}</menu>
+{% if entity.special.category %}
+
+			<menu link="option=com_categories&amp;extension=com_{{ project.name | file }}"
+				  img="class:{{ entity.name | singular | file }}-category"
+				  alt="{{ project.name | class }}/categories">COM_{{ project.name | constant }}_CATEGORIES</menu>
+{% endif %}
+{% endif %}
+{% endfor %}
+
+		</submenu>
+
+		<files folder="administrator">
+			<filename>{{ project.name | file }}.php</filename>
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<folder>assets</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+
+		<languages folder="language">
+			<language tag="en-GB">en-GB/en-GB.com_{{ project.name | file }}.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_{{ project.name | file }}.sys.ini</language>
+			<language tag="de-DE">de-DE/de-DE.com_{{ project.name | file }}.ini</language>
+			<language tag="de-DE">de-DE/de-DE.com_{{ project.name | file }}.sys.ini</language>
+		</languages>
+
+	</administration>
+</extension>

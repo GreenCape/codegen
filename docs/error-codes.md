@@ -2,14 +2,15 @@
 
 ## Template Errors (10xx)
 
-### 1001 Template has no template declaration
+### 1000 Twig template error
 
-Each template must have a template declaration
+This error happens when Twig fails to render a template.
+The line number in the message does not account for the template declaration,
+since that is removed, before Twig gets access to the template.
+Thus the correct line number is the stated number + 1. 
+
+### 1001 *Unused*
   
-```
-<?template scope="application"?>
-```
-
 ### 1002 Template declaration has no scope attribute
 
 A template must have a scope attribute

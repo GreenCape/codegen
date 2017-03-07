@@ -6,35 +6,35 @@ class Template
 {
     private $template;
 
-    private $scope;
+    private $scope = '';
 
-    private $condition = '';
+    private $templateFile;
 
     /** @var  Inflector */
     private $inflector;
 
+    private $isVerbatim = false;
+
     public function __construct($templateFile)
     {
-        $template = file_get_contents($templateFile);
+        $this->templateFile = $templateFile;
+        $template = file_get_contents($this->templateFile);
 
-        if (!preg_match('~^\s*\<\?template\s+(.*?)\s*\?\>\s*~sim', $template, $matches)) {
-            throw new \Exception('Template has no template declaration', 1001);
+        $this->isVerbatim = true;
+        if (preg_match('~^\s*\<\?template\s+(.*?)\s*\?\>\s*~sim', $template, $matches)) {
+            $this->isVerbatim = false;
+
+            $template   = str_replace($matches[0], '', $template);
+            $attributes = $matches[1];
+
+            if (!preg_match('~\s*scope\s*=\s*(["\'])(.*?)\1\s*~sim', $attributes, $scope)) {
+                throw new \Exception('Template declaration has no scope attribute in ' . $this->templateFile, 1002);
+            }
+
+            $this->scope = $scope[2];
         }
 
-        $this->template = str_replace($matches[0], '', $template);
-
-        $attributes = $matches[1];
-        if (!preg_match('~\s*scope=(["\'])(.*?)\1\s*~sim', $attributes, $scope)) {
-            throw new \Exception('Template declaration has no scope attribute', 1002);
-        }
-
-        $this->scope = $scope[2];
-        $attributes = str_replace($scope[0], '', $attributes);
-
-        if (preg_match('~\s*condition=(["\'])(.*?)\1\s*~sim', $attributes, $condition)) {
-            $this->condition = $condition[2];
-        }
-
+        $this->template = $template;
         $this->inflector = new Inflector();
     }
 
@@ -43,23 +43,30 @@ class Template
         return $this->scope;
     }
 
-    public function getCondition(): string
-    {
-        return $this->condition;
-    }
-
     public function render(array $context): string
     {
+        if ($this->isVerbatim)
+        {
+            return $this->template;
+        }
+
         $filters = [
             'singular', 'plural',
-            'title', 'variable', 'class', 'table', 'dash',
+            'title', 'variable', 'class', 'table', 'dash', 'file', 'constant',
         ];
-        $twig = new \Twig_Environment(new \Twig_Loader_Array(['template' => $this->template]));
+        $twig = new \Twig_Environment(new \Twig_Loader_Array([$this->templateFile => $this->template]));
         foreach ($filters as $filter) {
             $this->addFilter($twig, $filter);
         }
 
-        return $twig->render('template', $context);
+        try {
+            $template = $twig->render($this->templateFile, $context);
+        } catch (\Exception $e) {
+            #throw new \Exception($e->getMessage(), 1000);
+            echo $e->getMessage() . "\n";
+            $template = $e->getMessage();
+        }
+        return $template;
     }
 
     private function addFilter(\Twig_Environment $twig, $filter)

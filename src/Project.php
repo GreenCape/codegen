@@ -50,11 +50,20 @@ class Project
 
     public function setEntities($entities)
     {
-        $this->entities = $entities;
+        foreach ($entities as $entity) {
+            $this->addEntity($entity);
+        }
     }
 
     public function addEntity($entity)
     {
-        $this->entities[] = $entity;
+        $entity['special'] = [];
+
+        foreach ($entity['properties'] as $property) {
+            if (isset($property['role'])) {
+                $entity['special'][$property['role']] = $property;
+            }
+        }
+        $this->entities[$entity['name']] = $entity;
     }
 }

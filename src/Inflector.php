@@ -8,6 +8,8 @@ class Inflector extends \Doctrine\Common\Inflector\Inflector
     {
         if ($filter == 'class') {
             $filter = 'className';
+        } elseif ($filter == 'file') {
+            $filter = 'fileName';
         }
         return call_user_func([$this, $filter], $string);
     }
@@ -32,9 +34,19 @@ class Inflector extends \Doctrine\Common\Inflector\Inflector
         return strtolower(str_replace(' ', '_', $this->title($string)));
     }
 
+    public function fileName($string)
+    {
+        return strtolower(str_replace(' ', '_', $this->title($string)));
+    }
+
     public function dash($string)
     {
         return strtolower(str_replace(' ', '-', $this->title($string)));
+    }
+
+    public function constant($string)
+    {
+        return strtoupper(str_replace(' ', '_', $this->title($string)));
     }
 
     public function singular($string)

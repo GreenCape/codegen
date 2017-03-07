@@ -1,0 +1,69 @@
+<?template scope="application"?>
+@charset "UTF-8";
+/**
+ * {{ project.title }} Backend Cascading Style Sheet
+ *
+ * CSS version 2
+ *
+{# align("\t", '  ') #}
+ * @version    {{ project.version }}
+ * @package    {{ project.name | class }}
+{% for author in project.authors %}
+ * @author     {{ author.name }} <{{ author.email | lower }}>
+{% endfor %}
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+ * @license    {{ project.license }}
+{# endalign #}
+ */
+{% for entity in project.entities %}
+
+.icon-48-{{ entity.name | singular | file }} {
+	background-image: url(../images/icon-48-{{ project.name | file }}.png);
+}
+
+.icon-48-{{ entity.name | plural | file }} {
+	background-image: url(../images/icon-48-{{ project.name | file }}.png);
+}
+{% endfor %}
+
+.icon-16-{{ project.name | file }} {
+	background-image: url(../images/icon-16-{{ project.name | file }}.png);
+}
+{% for entity in project.entities %}
+
+.icon-16-{{ entity.name | singular | file }} {
+	background-image: url(../images/icon-16-{{ project.name | file }}.png);
+}
+{% if entity.role == 'main' and entity.special.category %}
+
+.icon-16-{{ entity.name | singular | file }}-category {
+	background-image: url(../images/icon-16-{{ project.name | file }}.png);
+}
+{% endif %}
+{% endfor %}
+{% for entity in project.entities %}
+{% for property in entity.properties %}
+{% if property.input == 'richtext' %}
+
+#jform_{{ property.name | variable }}_parent {
+	display: block;
+	clear:both;
+}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+span.entry-count {
+	background-color: #025A8D;
+	border-radius: 4px 4px 4px 4px;
+	color: #FFFFFF;
+	display: inline-block;
+	min-width: 2em;
+	padding: 2px 4px;
+}
+
+.filter-select select {
+	max-width: 150px;
+}
+{# override extra_css #}{# endoverride #}
+

@@ -22,15 +22,17 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     public function tearDown()
     {
         if (is_dir($this->outputDir)) {
-            `rm -rf $this->outputDir`;
+            #`rm -rf $this->outputDir`;
         }
     }
 
+    /**
+     * @testdox OpenAPI 2 template compiles
+     */
     public function testSwagger()
     {
         $project = new \GreenCape\CodeGen\Project($this->projectFile);
-        $entityFile = dirname($this->projectFile) . '/entities/article.json';
-        $project->addEntity(json_decode(file_get_contents($entityFile), true));
+        $project->addEntity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true));
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
@@ -40,7 +42,7 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
 
         $swagger = Yaml::parse(file_get_contents($this->outputDir . '/swagger.yml'));
 
-        $this->assertEquals('Test Project 1', $swagger['info']['title']);
+        $this->assertEquals('First Test Project', $swagger['info']['title']);
         $this->assertArrayHasKey('/articles', $swagger['paths']);
         $this->assertArrayHasKey('Article', $swagger['definitions']);
     }

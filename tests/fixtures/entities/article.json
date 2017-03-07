@@ -7,7 +7,8 @@
   "properties": [
     {
       "name": "id",
-      "type": "id",
+      "type": "integer",
+      "role": "key",
       "label": "JGLOBAL_FIELD_ID_LABEL",
       "description": "JGLOBAL_FIELD_ID_DESC",
       "hint": "JGLOBAL_FIELD_ID_HINT",
@@ -26,6 +27,7 @@
     {
       "name": "title",
       "type": "title",
+      "role": "title",
       "label": "JGLOBAL_TITLE",
       "description": "JGLOBAL_TITLE_DESC",
       "hint": "JGLOBAL_TITLE_HINT",
@@ -39,6 +41,7 @@
     {
       "name": "category",
       "type": "text",
+      "role": "category",
       "label": "COM_ARTICLE_FIELD_CATEGORY_LABEL",
       "description": "COM_ARTICLE_FIELD_CATEGORY_DESC",
       "hint": "COM_ARTICLE_FIELD_CATEGORY_HINT"
@@ -46,6 +49,7 @@
     {
       "name": "alias",
       "type": "text",
+      "role": "alias",
       "label": "JGLOBAL_FIELD_ALIAS_LABEL",
       "description": "JGLOBAL_FIELD_ALIAS_DESC",
       "hint": "JGLOBAL_FIELD_ALIAS_HINT"
@@ -97,8 +101,16 @@
       {
         "name": "parent_id",
         "entity": "Article",
+        "role": "parent",
         "label": "JFIELD_PARENT_LABEL",
         "description": "JFIELD_PARENT_DESC"
+      },
+      {
+        "name": "created_by",
+        "entity": "User",
+        "role": "author",
+        "label": "JFIELD_AUTHOR_LABEL",
+        "description": "JFIELD_AUTHOR_DESC"
       }
     ],
     "hasMany": [

@@ -1,0 +1,19 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * {{ project.title }} Component Metadata
+ *
+ * XML version 1.0
+ *
+{# align("\t", '  ') #}
+ * @version    {{ project.version }}
+ * @package    {{ project.name | class }}
+ * @author     {{ author.name }} <{{ author.email | lower }}>
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+ * @license    {{ project.license }}
+{# endalign #}
+ */
+-->
+<metadata>
+</metadata>

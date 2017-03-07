@@ -10,7 +10,7 @@ basePath: /v1
 produces:
   - application/json
 paths:
-{% for entity in entities %}
+{% for entity in project.entities %}
   /{{ entity.name | plural | dash }}:
     get:
       summary: {{ entity.name | plural | title  }}
@@ -33,7 +33,7 @@ paths:
             $ref: '#/definitions/Error'
 {% endfor %}
 definitions:
-{% for entity in entities %}
+{% for entity in project.entities %}
   {{ entity.name | singular | class }}:
     type: object
     properties:

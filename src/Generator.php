@@ -8,6 +8,9 @@ class Generator
     private $templatePath;
     private $outputPath;
 
+    /** @var  Inflector */
+    private $inflector;
+
     public function project(Project $project): Generator
     {
         $this->project = $project;
@@ -36,22 +39,24 @@ class Generator
 
     public function generate()
     {
-        $context = [
-            'project' => $this->project->properties,
-            'entities' => $this->project->entities,
-        ];
+        $this->inflector = new Inflector();
 
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {
             $source = $info->getPathname();
-            $destination = $this->getDestinationPath($source);
+            $template = new Template($source);
+            $scope = $template->getScope();
 
-            if ($info->isDir()) {
-                mkdir($destination, 0777, true);
-                continue;
+            if ($scope == 'entity' || strpos($source, '#') !== false)
+            {
+                foreach ($this->project->entities as $entity) {
+                    $this->render($template, $source, $entity);
+                }
             }
-
-            file_put_contents($destination, (new Template($source))->render($context));
+            else
+            {
+                $this->render($template, $source);
+            }
         }
     }
 
@@ -73,15 +78,47 @@ class Generator
 
     /**
      * @param $source
+     * @param array $entity
      * @return string
      */
-    private function getDestinationPath($source): string
+    private function getDestinationPath($source, $entity = null): string
     {
+        $name = is_null($entity) ? 'entity' : $entity['name'];
         $replace = [
             $this->templatePath => $this->outputPath,
-            '{{project}}' => $this->project->name,
+            '$' => $this->inflector->fileName($this->project->name),
+            '#s' => $this->inflector->fileName($this->inflector->plural($name)),
+            '#' => $this->inflector->fileName($name),
         ];
         $destination = str_replace(array_keys($replace), array_values($replace), $source);
         return $destination;
+    }
+
+    /**
+     * @param Template $template
+     * @param string   $source
+     * @param array    $entity
+     */
+    private function render($template, $source, $entity = null)
+    {
+        $destination = $this->getDestinationPath($source, $entity);
+
+        if (is_dir($source)) {
+            mkdir($destination, 0777, true);
+            return;
+        }
+
+        $context = [
+            'project' => $this->project->properties,
+            'entity' => $entity
+        ];
+
+        $content = $template->render($context);
+
+        if (trim($content) > '') {
+            file_put_contents($destination, $content);
+        }
+
+        return;
     }
 }

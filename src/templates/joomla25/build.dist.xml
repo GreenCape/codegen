@@ -1,0 +1,217 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="{{ project.title }}" default="build" basedir="">
+
+	<property name="project.name" value="{{ project.title }}"/>
+	<property name="project.source" value="source"/>
+
+	<xmlproperty file="${project.basedir}/${project.source}/manifest.xml"/>
+
+	<property name="package.type" value="com"/>
+	<property name="package.name" value="{{ project.name | file }}"/>
+	<!--suppress PhingDomInspection - extension.version comes from manifest.xml -->
+	<property name="package.version" value="${extension.version}"/>
+
+	<!--
+	Choose the apidoc generator to be used for target phpdoc.
+	Currently phpdox, phpdoc2 and docblox are supported.
+	-->
+	<property name="apidoc.generator" value="docblox"/>
+	<property name="apidoc.title" value="${project.name} ${package.version} API Documentation"/>
+
+	<fileset dir="${project.source}" id="component-files">
+		<include name="**/*"/>
+		<exclude name="template/"/>
+	</fileset>
+	<fileset dir="${project.source}/template" id="template-files">
+		<include name="**/*"/>
+	</fileset>
+	<fileset dir="${project.source}" id="component-php-files">
+		<include name="**/*.php"/>
+		<exclude name="template/"/>
+		<exclude name="**/tmpl/*.php"/>
+	</fileset>
+	<fileset dir="${project.source}" id="php-files">
+		<include name="**/*.php"/>
+	</fileset>
+	<fileset dir="${project.source}" id="xml-files">
+		<include name="**/*.xml"/>
+	</fileset>
+
+	<target name="build" depends="clean, generate, phpunit, phpcb"/>
+
+	<target name="build-dist" depends="build, clean-dist" description="Generate the distribution">
+		<zip destfile="dist/${package.type}_${package.name}-${package.version}.zip">
+			<fileset refid="component-files"/>
+		</zip>
+		<tar destfile="dist/${package.type}_${package.name}-${package.version}.tar.gz" compression="gzip">
+			<fileset refid="component-files"/>
+		</tar>
+		<tar destfile="dist/${package.type}_${package.name}-${package.version}.tar.bz2" compression="bzip2">
+			<fileset refid="component-files"/>
+		</tar>
+		<zip destfile="dist/template_${package.name}-${package.version}.zip">
+			<fileset refid="template-files"/>
+		</zip>
+		<tar destfile="dist/template_${package.name}-${package.version}.tar.gz" compression="gzip">
+			<fileset refid="template-files"/>
+		</tar>
+		<tar destfile="dist/template_${package.name}-${package.version}.tar.bz2" compression="bzip2">
+			<fileset refid="template-files"/>
+		</tar>
+	</target>
+
+	<target name="clean" description="Clean up and create artifact directories">
+		<delete dir="${project.basedir}/build/api"/>
+		<delete dir="${project.basedir}/build/code-browser"/>
+		<delete dir="${project.basedir}/build/coverage"/>
+		<delete dir="${project.basedir}/build/logs"/>
+		<delete dir="${project.basedir}/build/charts"/>
+
+		<mkdir dir="${project.basedir}/build/api"/>
+		<mkdir dir="${project.basedir}/build/code-browser"/>
+		<mkdir dir="${project.basedir}/build/coverage"/>
+		<mkdir dir="${project.basedir}/build/logs"/>
+		<mkdir dir="${project.basedir}/build/charts"/>
+	</target>
+
+	<target name="clean-dist" description="Clean up and create distribution directory">
+		<delete dir="${project.basedir}/dist"/>
+		<mkdir dir="${project.basedir}/dist"/>
+	</target>
+
+	<target name="generate" description="Run the phpdepend, phpmd, phpcpd, phpcs, doc and phploc tasks in parallel using a maximum of 2 threads.">
+		<!-- A parallel task does not yet exist -->
+		<phingcall target="phpdepend"/>
+		<phingcall target="phpmd"/>
+		<phingcall target="phpcpd"/>
+		<phingcall target="phpcs"/>
+		<phingcall target="phpdoc"/>
+		<phingcall target="phploc"/>
+	</target>
+
+	<target name="gen-changelog" description="Generate CHANGELOG">
+		<exec command="git log --pretty=format:'%+d %ad [%h] %s (%an)' --date=short > ${project.basedir}/CHANGELOG"/>
+		<reflexive>
+			<fileset dir="${project.basedir}">
+				<include name="CHANGELOG"/>
+			</fileset>
+			<filterchain>
+				<replaceregexp>
+					<regexp pattern="(\n)\s*\(([^)]+)\)" replace="\1\1 Version \2\1\1"/>
+					<regexp pattern="(\n) +" replace="\1"/>
+					<regexp pattern="^(\n)" replace="Changelog\1=========\1"/>
+				</replaceregexp>
+			</filterchain>
+		</reflexive>
+	</target>
+
+	<target name="phpdepend" description="Generate depend.xml and software metrics charts using PHP Depend">
+		<phpdepend file="${project.source}">
+			<logger type="jdepend-xml" outfile="${project.basedir}/build/logs/depend.xml"/>
+			<logger type="jdepend-chart" outfile="${project.basedir}/build/charts/dependencies.svg"/>
+			<logger type="overview-pyramid" outfile="${project.basedir}/build/charts/overview-pyramid.svg"/>
+		</phpdepend>
+	</target>
+
+	<target name="phpcb" description="Aggregate tool output with PHP CodeBrowser">
+		<!-- A phpcb task does not yet exist -->
+		<exec executable="phpcb">
+			<arg line="--log=${project.basedir}/build/logs" />
+			<arg line="--output=${project.basedir}/build/code-browser" />
+		</exec>
+	</target>
+
+	<target name="phpcpd" description="Generate pmd-cpd.xml using PHP CopyPasteDetector">
+		<phpcpd>
+			<fileset refid="component-files"/>
+			<formatter type="pmd" outfile="${project.basedir}/build/logs/pmd-cpd.xml"/>
+		</phpcpd>
+	</target>
+
+	<target name="phpcs" description="Generate checkstyle.xml using PHP CodeSniffer">
+		<phpcodesniffer standard="${project.basedir}/build/phpcs/Joomla" showSniffs="true" showWarnings="true">
+			<fileset refid="component-php-files"/>
+			<formatter type="checkstyle" outfile="${project.basedir}/build/logs/checkstyle.xml"/>
+		</phpcodesniffer>
+	</target>
+
+	<target name="phpdoc" description="Generate the API documentation">
+		<phingcall target="gen-changelog"/>
+		<!--suppress PhingDomInspection -->
+		<phingcall target="phpdoc-${apidoc.generator}"/>
+	</target>
+
+	<target name="phpdoc-docblox" description="Generate API documentation using DocBlox">
+		<!-- ATTN: Requires Zend Framework! -->
+		<docblox title="${apidoc.title}" destdir="${project.basedir}/build/api">
+			<fileset refid="component-files"/>
+		</docblox>
+	</target>
+
+	<target name="phpdoc-phpdox" description="Generate API documentation using PHP Dox">
+		<exec command="phpdox"/>
+	</target>
+
+	<target name="phpdoc-phpdoc2" description="Generate API dpcumentation using PHPDocumentor2">
+		<phpdoc2 title="API Documentation"
+				 destdir="${project.basedir}/build/api"
+				 template="responsive">
+			<fileset refid="component-files"/>
+		</phpdoc2>
+	</target>
+
+	<target name="phploc" description="Generate phploc.csv">
+		<!-- A phploc task does not yet exist -->
+		<exec command="phploc --log-csv ${project.basedir}/build/logs/phploc.csv ${project.source}"/>
+	</target>
+
+	<target name="phpmd" description="Generate pmd.xml using PHP MessDetector">
+		<phpmd rulesets="${project.basedir}/phpmd.xml">
+			<fileset refid="component-files"/>
+			<formatter type="xml" outfile="${project.basedir}/build/logs/pmd.xml"/>
+		</phpmd>
+	</target>
+
+	<target name="phpab" description="Generate autoloader for mock classes">
+		<exec executable="phpab">
+			<arg value="--nolower"/>
+			<arg value="--basedir"/>
+			<arg path="${project.basedir}/tests"/>
+			<arg value="--output"/>
+			<arg path="${project.basedir}/tests/autoload.php"/>
+			<arg path="${project.basedir}/tests/core"/>
+		</exec>
+	</target>
+
+	<target name="phpunit" depends="phpab"
+			description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+		<exec command="phpunit" outputProperty="output" dir="${project.basedir}"/>
+		<echo>${output}</echo>
+	</target>[[comment]]
+
+	<!--
+	<target name="docs" description="Build the manuals">
+	  <build-manual language="de" />
+	</target>
+
+	<target name="clean2" description="Clean up" >
+	  <delete file="out.pdf" />
+	</target>
+
+	<macrodef name="build-manual">
+	  <attribute name="language" />
+	  <sequential>
+		<apply parallel="true" executable="pdftk">
+		  <filelist dir="." />
+		  <arg line="docs/@{language}/install.pdf docs/@{language}/config.pdf docs/@{language}/admin.pdf output out.pdf" />
+		</apply>
+		<apply parallel="true" executable="pdftk">
+		  <filelist dir="." />
+		  <arg line="out.pdf update_info ${info} output dist/${name}-${version}-@{language}.pdf" />
+		</apply>
+	  </sequential>
+	</macrodef>
+	-->[[/comment]]
+
+</project>

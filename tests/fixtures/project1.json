@@ -1,10 +1,11 @@
 {
-  "name": "test_project_1",
-  "title": "Test Project 1",
+  "name": "test_project",
+  "title": "First Test Project",
   "version": "1.0.0",
   "description": "A dummy test project",
   "type": "test",
   "license": "MIT",
+  "copyright": "BSDS Braczek Software- und DatenSysteme",
   "authors": [
     {
       "name": "Niels Braczek",

@@ -11,6 +11,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
         'class' => 'TestData',
         'table' => 'test_data',
         'dash' => 'test-data',
+        'constant' => 'TEST_DATA',
     ];
 
     public function setUp()

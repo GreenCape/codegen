@@ -19,8 +19,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
 
     public function tearDown()
     {
-        if (is_dir($this->outputDir))
-        {
+        if (is_dir($this->outputDir)) {
             `rm -rf $this->outputDir`;
         }
     }
@@ -56,19 +55,12 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @testdox Placeholder {{project}} in the path is replaced with the project name
+     * @testdox Placeholder $ in the path is replaced with the project name
      */
     public function testProjectNameIsReplaced()
     {
         $project = new \GreenCape\CodeGen\Project($this->projectFile);
-
-        (new \GreenCape\CodeGen\Generator())
-            ->project($project)
-            ->template($this->templateDir)
-            ->output($this->outputDir)
-            ->generate();
-
-        $outputDir = $this->outputDir . '/' . $project->name;
+        $outputDir = $this->generate($project);
 
         $this->assertDirectoryExists($outputDir);
     }
@@ -79,18 +71,9 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
     public function testConfigValuesAreReplaced()
     {
         $project = new \GreenCape\CodeGen\Project($this->projectFile);
+        $outputDir = $this->generate($project);
 
-        (new \GreenCape\CodeGen\Generator())
-            ->project($project)
-            ->template($this->templateDir)
-            ->output($this->outputDir)
-            ->generate();
-
-        $outputDir = $this->outputDir . '/' . $project->name;
-
-        $readme = file_get_contents($outputDir . '/README.md');
-
-        $this->assertContains('# ' . $project->title, $readme);
+        $this->assertContains('# ' . $project->title, file_get_contents($outputDir . '/README.md'));
     }
 
 
@@ -100,17 +83,23 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
     public function testTemplateDirectiveIsRemoved()
     {
         $project = new \GreenCape\CodeGen\Project($this->projectFile);
+        $outputDir = $this->generate($project);
 
+        $this->assertNotContains('<?template', file_get_contents($outputDir . '/README.md'));
+    }
+
+    /**
+     * @param $project
+     * @return string
+     */
+    private function generate($project): string
+    {
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
 
-        $outputDir = $this->outputDir . '/' . $project->name;
-
-        $readme = file_get_contents($outputDir . '/README.md');
-
-        $this->assertNotContains('<?template', $readme);
+        return $this->outputDir . '/' . $project->name;
     }
 }

@@ -1,0 +1,609 @@
+<?template scope="entity"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * {{ project.title }} {{ entity.name | title }} Form Definition
+ *
+ * XML version 1.0
+ *
+{# align("\t", '  ') #}
+ * @version    {{ project.version }}
+ * @package    {{ project.name | class }}
+ * @author   Niels Braczek <nbraczek@bsds.de>
+ * @copyright  Copyright (C){{ "now" | date('Y') }} {{ copyright }}. All rights reserved.
+ * @license    {{ project.license }}
+{# endalign #}
+ */
+-->
+<form>
+{# context xml #}
+
+	<fieldset name="details" addfieldpath="/administrator/components/com_{{ project.name | file }}/models/fields">
+{% if entity.special.key %}
+{% set property = entity.special.key %}
+{# override key #}
+
+		<field name="{{ property.name | variable }}" type="Text" default=""
+			   readonly="true"
+			   class="readonly"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description ="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 1 -->
+{# endoverride #}
+{% endif %}
+{% if entity.special.title %}
+{% set property = entity.special.title %}
+{# override title #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   required="true"
+			   class="inputbox"
+			   size="40"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 2 -->
+{# endoverride #}
+{% endif %}
+{% if entity.special.alias %}
+{% set property = entity.special.alias %}
+{# override alias #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   class="inputbox"
+			   size="40"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 3 -->
+{# endoverride #}
+{% endif %}
+{% if entity.special.category %}
+{% set property = entity.special.category %}
+{# override category #}
+
+		<field name="{{ property.name | variable }}" type="Category" extension="com_{{ project.name | file }}"
+			   required="true"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 4 -->
+{# endoverride #}
+{% endif %}
+{% if entity.special.published %}
+{% set property = entity.special.published %}
+{# override published #}
+
+		<field name="{{ property.name | variable }}" type="List" default="1"
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="2">JARCHIVED</option>
+			<option value="-2">JTRASHED</option>
+		</field><!-- 5 -->
+{# endoverride #}
+{% endif %}
+{% for property in entity.references.foreignKeys  %}
+{% set foreignEntity = project.entities[property.type.entity] %}
+{% if property.form == 'parameters' %}
+{# handled in next fieldset #}
+{% elseif property.role == 'category' %}
+{# handled in case 4 #}
+{% elseif foreignEntity.role == 'lookup' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="{{ foreignEntity.name | singular | class }}" default=""
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+		</field><!-- 6a -->
+{# endoverride #}
+{% else %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Modal_{{ foreignEntity.name | singular | class }}" default=""
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+		</field><!-- 6c -->
+{# endoverride #}
+{% endif %}
+{% endfor %}
+{% if entity.special.ordering %}
+{% set property = entity.special.ordering %}
+{# override ordering #}
+
+		<field name="{{ property.name | variable }}" type="{{ entity.name | class }}Ordering"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="JFIELD_ORDERING_DESC" /><!-- 7 -->
+{# endoverride #}
+{% endif %}
+{% for property in entity.properties %}
+{% if property.form == 'parameters' %}
+{# handled in next fieldset #}
+{% elseif property.input == 'none' %}
+{# nothing to do #}
+{% elseif property.role == 'key' %}
+{# handled in case 1 #}
+{% elseif property.role == 'title' %}
+{# handled in case 2 #}
+{% elseif property.role == 'alias' %}
+{# handled in case 3 #}
+{% elseif property.role == 'category' %}
+{# handled in case 4 #}
+{% elseif property.role == 'published' %}
+{# handled in case 5 #}
+{% elseif property.role == 'ordering' %}
+{# handled in case 7 #}
+{% elseif property.role == 'language' %}
+{% elseif property.type.base == 'reference' %}
+		<!-- 8 - eliminated; {{ property.name | variable }} should be rendered as one of 6a-6c -->
+{% elseif property.input == 'string' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   class="inputbox"
+			   size="40"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 9 -->
+{# endoverride #}
+{% elseif property.input == 'text' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Textarea" default="{{ property.default }}"
+			   class="inputbox"
+			   rows="3" cols="30"
+			   filter="raw"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 10 -->
+{# endoverride #}
+{% elseif property.input == 'richtext' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Editor" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 11 -->
+{# endoverride #}
+{% elseif property.input == 'num' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   class="inputbox"
+			   size="12"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 12 -->
+{# endoverride #}
+{% elseif property.input == 'date' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Calendar" default="{{ property.default }}"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 13a -->
+{# endoverride #}
+{% elseif property.input == 'datetime' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Calendar" default="{{ property.default }}"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 13b -->
+{# endoverride #}
+{% elseif property.input == 'yesno' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Radio" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field><!-- 14 -->
+{# endoverride #}
+{% elseif property.input == 'multi' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="10"
+			   multiple="true"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 15 -->
+{# endoverride #}
+{% elseif property.input == 'check' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Checkbox" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 16 -->
+{# endoverride #}
+{% elseif property.type.base == 'enum' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 17.1 -->
+{# endoverride #}
+{% elseif property.input == 'select' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 17.2 -->
+{# endoverride #}
+{% elseif property.input == 'radio' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Radio" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 18 -->
+{# endoverride #}
+{% elseif property.input == 'file' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="File"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 19 -->
+{# endoverride #}
+{% elseif property.input == 'image' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="File"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 20 -->
+{# endoverride #}
+{% elseif property.input == 'url' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Url" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 21 -->
+{# endoverride #}
+{% else %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="{{ property.input | class }}" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 22 -->
+{# endoverride #}
+{% endif %}
+{% endfor %}
+
+	</fieldset>
+
+	<fieldset name="params" label="COM_{{ project.name | constant }}_FIELDSET_PARAMS">
+
+{# override asset_id #}
+		<field name="asset_id" type="hidden" filter="unset" />
+{# endoverride #}
+{% for property in entity.properties %}
+{% if property.form == 'record' %}
+{# handled in previous fieldset #}
+{% elseif property.role == 'language' %}
+{# override language #}
+
+		<field name="{{ property.name | variable }}" type="Contentlanguage"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="*">JALL</option>
+		</field><!-- 23 -->
+{# endoverride #}
+{% elseif property.role == 'created' %}
+{# override created #}
+
+		<field name="{{ entity.special.created.name }}" type="Calendar"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 24 -->
+{# endoverride #}
+{% elseif property.role == 'created_by' %}
+{# override created_by #}
+
+		<field name="created_by" type="User"
+			   readonly="true"
+			   filter="unset"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 25a -->
+{# endoverride #}
+{% elseif property.role == 'modified_by' %}
+{# override modified_by #}
+
+		<field name="modified_by" type="User"
+			   readonly="true"
+			   filter="unset"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 25b -->
+{# endoverride #}
+{% elseif property.role == 'publish_up' %}
+{# override publish_up #}
+
+		<field name="publish_up" type="Calendar"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 26 -->
+{# endoverride #}
+{% elseif property.role == 'publish_down' %}
+{# override publish_down #}
+
+		<field name="publish_down" type="Calendar"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 27 -->
+{# endoverride #}
+{% elseif property.type.base == 'reference' %}
+{% set foreignEntity = project.entities[property.type.entity] %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="{{ foreignEntity.name | singular | class }}" default=""
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+		</field><!-- 28 -->
+{# endoverride #}
+{% endif %}
+{% for property in entity.properties %}
+{% if property.form == 'record' %}
+{# handled in previous fieldset #}
+{% elseif property.role == 'publish_down' %}
+{# handled in case 27 #}
+{% elseif property.role == 'publish_up' %}
+{# handled in case 26 #}
+{% elseif property.role == 'created_by' %}
+{# handled in case 25a #}
+{% elseif property.role == 'created' %}
+{# handled in case 24 #}
+{% elseif property.role == 'language' %}
+{# handled in case 23 #}
+{% elseif property.input == 'none' %}
+{# nothing to do #}
+{% elseif property.role == 'key' %}
+{# handled in case 1 #}
+{% elseif property.role == 'title' %}
+{# handled in case 2 #}
+{% elseif property.role == 'alias' %}
+{# handled in case 3 #}
+{% elseif property.role == 'category' %}
+{# handled in case 4 #}
+{% elseif property.role == 'published' %}
+{# handled in case 5 #}
+{% elseif property.role == 'ordering' %}
+{# handled in case 7 #}
+{% elseif property.type.base == 'reference' %}
+{% set foreignEntity = project.entities[property.type.entity] %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="{{ foreignEntity.name | singular | class }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="*">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+		</field><!-- 29 -->
+{# endoverride #}
+{% elseif property.input == 'string' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   class="inputbox"
+			   size="40"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 30 -->
+{# endoverride #}
+{% elseif property.input == 'text' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Textarea" default="{{ property.default }}"
+			   class="inputbox"
+			   rows="3" cols="30"
+			   filter="raw"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 31 -->
+{# endoverride #}
+{% elseif property.input == 'richtext' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Editor" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 32 -->
+{# endoverride #}
+{% elseif property.input == 'num' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Text" default="{{ property.default }}"
+			   class="inputbox"
+			   size="12"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 33 -->
+{# endoverride #}
+{% elseif property.input == 'date' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Calendar" default="{{ property.default }}"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 34a -->
+{# endoverride #}
+{% elseif property.input == 'datetime' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Calendar" default="{{ property.default }}"
+			   class="inputbox"
+			   size="22"
+			   format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 34b -->
+{# endoverride #}
+{% elseif property.input == 'yesno' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Radio" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field><!-- 35 -->
+{# endoverride #}
+{% elseif property.input == 'multi' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="10"
+			   multiple="true"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 36 -->
+{# endoverride #}
+{% elseif property.input == 'check' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Checkbox" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 37 -->
+{# endoverride #}
+{% elseif property.type.base == 'enum' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 38 -->
+{# endoverride #}
+{% elseif property.input == 'select' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="List" default="{{ property.default }}"
+			   class="inputbox"
+			   size="1"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+			<option value="">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_SELECT</option>
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 39 -->
+{# endoverride #}
+{% elseif property.input == 'radio' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Radio" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC">
+{% for option in property.options %}
+			<option value="{{ option.key }}">COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_VALUE_{{ option.value | constant }}</option>
+{% endfor %}
+		</field><!-- 40 -->
+{# endoverride #}
+{% elseif property.input == 'file' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="File"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 41 -->
+{# endoverride #}
+{% elseif property.input == 'image' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="File"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 42 -->
+{# endoverride #}
+{% elseif property.input == 'url' %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="Url" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 43 -->
+{# endoverride #}
+{% else %}
+{# override property.name #}
+
+		<field name="{{ property.name | variable }}" type="{{ property.input | class }}" default="{{ property.default }}"
+			   class="inputbox"
+			   label="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_LABEL"
+			   description="COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ property.name | constant }}_DESC" /><!-- 44 -->
+{# endoverride #}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+	</fieldset>
+{# endcontext #}
+</form>

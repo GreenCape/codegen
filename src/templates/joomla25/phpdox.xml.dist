@@ -1,0 +1,37 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://phpdox.de/config" silent="false">
+
+	<bootstrap />
+
+	<project name="{{ project.title }}" source="source" workdir="build/api/xml">
+
+		<collector publiconly="false">
+			<include mask="*.php"/>
+			<exclude mask=""/>
+		</collector>
+
+		<generator output="${basedir}/build/api">
+
+			<build engine="html" enabled="true" output="html">
+				<template dir="/usr/share/php5/PEAR/TheSeer/phpDox/templates/html" />
+				<file extension="html" />
+			</build>
+
+			<build engine="todo" enabled="true" output="todo">
+				<file name="todolist.txt" encoding="utf-8" />
+			</build>
+
+			<build engine="graph" enabled="true" output="graph">
+				<dot executable="/usr/bin/dot" render="true" format="png" />
+			</build>
+
+			<build engine="xslrunner" enabled="true" output="html2">
+				<template dir="/usr/share/php5/PEAR/TheSeer/phpDox/templates/xslrunner" />
+			</build>
+
+		</generator>
+
+	</project>
+
+</phpdox>

@@ -15,7 +15,7 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
     {
         $project = new \GreenCape\CodeGen\Project($this->templateDir . '/project1.json');
 
-        $this->assertEquals('test_project_1', $project->name);
+        $this->assertEquals('test_project', $project->name);
         $this->assertEquals(1, count($project->authors));
     }
 
