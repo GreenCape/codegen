@@ -98,6 +98,11 @@ class Entity
     private $references = [];
 
     /**
+     * Allow read access to non-public members
+     */
+    use ReadOnlyGuard;
+
+    /**
      * Entity constructor.
      *
      * @param array $config The entity settings
@@ -246,21 +251,5 @@ class Entity
     public function getProperties(): array
     {
         return $this->properties;
-    }
-
-    /**
-     * Read Accessor (for Twig)
-     *
-     * @param string $property The requested property
-     *
-     * @return mixed The property value
-     */
-    public function __get($property)
-    {
-        if (method_exists($this, 'get' . ucfirst($property))) {
-            return call_user_func([$this, 'get' . ucfirst($property)]);
-        }
-
-        return $this->{$property};
     }
 }

@@ -18,6 +18,11 @@ class Validation
      */
     private $value;
 
+    /**
+     * Allow read access to non-public members
+     */
+    use ReadOnlyGuard;
+
     public function __construct($rule, $value = null)
     {
         if (is_string($rule)) {

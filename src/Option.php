@@ -19,6 +19,11 @@ class Option
     private $value;
 
     /**
+     * Allow read access to non-public members
+     */
+    use ReadOnlyGuard;
+
+    /**
      * @return int|string
      */
     public function getKey()
