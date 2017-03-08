@@ -107,10 +107,6 @@ The information is defined in a JSON file, usually `project.json`.
 
         This is a mapping table, containing id pairs (and optionally additional data) of many-to-many relations.
 
-    + `external`
-
-        This represents an external table. No entity templates are rendered for this table, but the information may be useful for other related entites.
-
 + `storage`
 
     Information about the storage. Currently only the `type` 'default' is supported, requiring the declaration of a `table` name. 

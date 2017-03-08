@@ -1,5 +1,7 @@
 <?php
 
+use GreenCape\CodeGen\Project;
+
 class ProjectTest extends \PHPUnit\Framework\TestCase
 {
     private $templateDir;
@@ -13,27 +15,17 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
 
     public function testPropertiesAreReadable()
     {
-        $project = new \GreenCape\CodeGen\Project($this->templateDir . '/project1.json');
+        $project = new Project(json_decode(file_get_contents($this->templateDir . '/project1.json'), true));
 
         $this->assertEquals('test_project', $project->name);
         $this->assertEquals(1, count($project->authors));
     }
 
-    public function testPropertiesAreWriteable()
+    public function testPropertiesAreNotWriteable()
     {
-        $project = new \GreenCape\CodeGen\Project($this->templateDir . '/project1.json');
+        $this->expectExceptionCode(1102);
+
+        $project = new Project(json_decode(file_get_contents($this->templateDir . '/project1.json'), true));
         $project->name = 'new_name';
-
-        $this->assertEquals('new_name', $project->name);
-    }
-
-    public function testPropertiesUseGetterAndSetterIfAvailable()
-    {
-        $project = new \GreenCape\CodeGen\Project($this->templateDir . '/project1.json');
-
-        $project->entities = ['foo'];
-        $project->addEntity('bar');
-
-        $this->assertEquals(['foo', 'bar'], $project->entities);
     }
 }

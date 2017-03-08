@@ -1,5 +1,7 @@
 <?php
 
+use GreenCape\CodeGen\Entity;
+use GreenCape\CodeGen\Project;
 use Symfony\Component\Yaml\Yaml;
 
 class SwaggerTest extends \PHPUnit\Framework\TestCase
@@ -16,7 +18,7 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
 
         $this->projectFile = $basePath . '/fixtures/project1.json';
         $this->templateDir = dirname($basePath) . '/src/templates/swagger.io';
-        $this->outputDir = $basePath . '/tmp';
+        $this->outputDir = $basePath . '/tmp/swagger.io';
     }
 
     public function tearDown()
@@ -31,8 +33,8 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
      */
     public function testSwagger()
     {
-        $project = new \GreenCape\CodeGen\Project($this->projectFile);
-        $project->addEntity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true));
+        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
+        $project->addEntity(new Entity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true)));
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)

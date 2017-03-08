@@ -20,3 +20,21 @@ A template must have a scope attribute
 ```
 
 Scope can be `application` or `entity`.
+
+## Definition Errors (11xx)
+
+### 1101 One of "name" or "title" must be set.
+
+A project declaration must contain a name or title property. It is valid to provide both, of course.
+
+### 1102 Project properties are read-only
+
+Project properties can not be written.
+
+### 1201 "name" must be set.
+
+An entity declaration must contain a name.
+
+### 1202 Project properties are read-only
+
+Entity properties can not be written.

@@ -1,5 +1,8 @@
 <?php
 
+use GreenCape\CodeGen\Entity;
+use GreenCape\CodeGen\Project;
+
 class Joomla25Test extends \PHPUnit\Framework\TestCase
 {
     private $projectFile;
@@ -14,7 +17,7 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
 
         $this->projectFile = $basePath . '/fixtures/project1.json';
         $this->templateDir = dirname($basePath) . '/src/templates/joomla25';
-        $this->outputDir = $basePath . '/tmp';
+        $this->outputDir = $basePath . '/tmp/joomla25';
     }
 
     public function tearDown()
@@ -29,13 +32,17 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
      */
     public function testJoomla25()
     {
-        $project = new \GreenCape\CodeGen\Project($this->projectFile);
-        $project->addEntity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true));
+        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
+        $project->addEntity(new Entity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true)));
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
+
+        $this->assertFileExists($this->outputDir . '/source/administrator/test_project.php');
+        $this->assertFileExists($this->outputDir . '/source/administrator/controllers/article.php');
+        $this->assertFileExists($this->outputDir . '/source/administrator/controllers/articles.php');
     }
 }

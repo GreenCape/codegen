@@ -18,7 +18,7 @@ class Template
     public function __construct($templateFile)
     {
         $this->templateFile = $templateFile;
-        $template = file_get_contents($this->templateFile);
+        $template           = file_get_contents($this->templateFile);
 
         $this->isVerbatim = true;
         if (preg_match('~^\s*\<\?template\s+(.*?)\s*\?\>\s*~sim', $template, $matches)) {
@@ -34,7 +34,7 @@ class Template
             $this->scope = $scope[2];
         }
 
-        $this->template = $template;
+        $this->template  = $template;
         $this->inflector = new Inflector();
     }
 
@@ -45,16 +45,12 @@ class Template
 
     public function render(array $context): string
     {
-        if ($this->isVerbatim)
-        {
+        if ($this->isVerbatim) {
             return $this->template;
         }
 
-        $filters = [
-            'singular', 'plural',
-            'title', 'variable', 'class', 'table', 'dash', 'file', 'constant',
-        ];
-        $twig = new \Twig_Environment(new \Twig_Loader_Array([$this->templateFile => $this->template]));
+        $filters = ['singular', 'plural', 'title', 'variable', 'class', 'table', 'dash', 'file', 'constant',];
+        $twig    = new \Twig_Environment(new \Twig_Loader_Array([$this->templateFile => $this->template]));
         foreach ($filters as $filter) {
             $this->addFilter($twig, $filter);
         }
@@ -62,16 +58,15 @@ class Template
         try {
             $template = $twig->render($this->templateFile, $context);
         } catch (\Exception $e) {
-            #throw new \Exception($e->getMessage(), 1000);
-            echo $e->getMessage() . "\n";
-            $template = $e->getMessage();
+            throw new \Exception($e->getMessage(), 1000);
         }
+
         return $template;
     }
 
     private function addFilter(\Twig_Environment $twig, $filter)
     {
-        $twig->addFilter(new \Twig_Filter($filter, function($string) use ($filter) {
+        $twig->addFilter(new \Twig_Filter($filter, function ($string) use ($filter) {
             return $this->inflector->apply($filter, $string);
         }));
     }

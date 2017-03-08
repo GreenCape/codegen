@@ -43,18 +43,16 @@ class Generator
 
         /** @var \SplFileInfo $info */
         foreach ($this->getRecursiveDirectoryIterator($this->templatePath) as $info) {
-            $source = $info->getPathname();
+            $source   = $info->getPathname();
             $template = new Template($source);
-            $scope = $template->getScope();
+            $scope    = $template->getScope();
 
-            if ($scope == 'entity' || strpos($source, '#') !== false)
-            {
+            if ($scope == 'entity' || strpos($source, '#') !== false) {
                 foreach ($this->project->entities as $entity) {
                     $this->render($template, $source, $entity);
                 }
             }
-            else
-            {
+            else {
                 $this->render($template, $source);
             }
         }
@@ -62,36 +60,21 @@ class Generator
 
     /**
      * @param $path
+     *
      * @return \RecursiveIteratorIterator
      */
     private function getRecursiveDirectoryIterator($path): \RecursiveIteratorIterator
     {
         $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::FOLLOW_SYMLINKS);
-        $filter = new \RecursiveCallbackFilterIterator($directory, function (\SplFileInfo $current) {
+        $filter    = new \RecursiveCallbackFilterIterator($directory, function (\SplFileInfo $current) {
             if ($current->getFilename() == '.' || $current->getFilename() == '..') {
                 return false;
             }
+
             return true;
         });
-        return new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST);
-    }
 
-    /**
-     * @param $source
-     * @param array $entity
-     * @return string
-     */
-    private function getDestinationPath($source, $entity = null): string
-    {
-        $name = is_null($entity) ? 'entity' : $entity['name'];
-        $replace = [
-            $this->templatePath => $this->outputPath,
-            '$' => $this->inflector->fileName($this->project->name),
-            '#s' => $this->inflector->fileName($this->inflector->plural($name)),
-            '#' => $this->inflector->fileName($name),
-        ];
-        $destination = str_replace(array_keys($replace), array_values($replace), $source);
-        return $destination;
+        return new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST);
     }
 
     /**
@@ -105,13 +88,11 @@ class Generator
 
         if (is_dir($source)) {
             mkdir($destination, 0777, true);
+
             return;
         }
 
-        $context = [
-            'project' => $this->project->properties,
-            'entity' => $entity
-        ];
+        $context = ['project' => $this->project, 'entity' => $entity];
 
         $content = $template->render($context);
 
@@ -120,5 +101,20 @@ class Generator
         }
 
         return;
+    }
+
+    /**
+     * @param       $source
+     * @param array $entity
+     *
+     * @return string
+     */
+    private function getDestinationPath($source, $entity = null): string
+    {
+        $name        = is_null($entity) ? 'entity' : $entity->name;
+        $replace     = [$this->templatePath => $this->outputPath, '$' => $this->inflector->fileName($this->project->name), '#s' => $this->inflector->fileName($this->inflector->plural($name)), '#' => $this->inflector->fileName($name),];
+        $destination = str_replace(array_keys($replace), array_values($replace), $source);
+
+        return $destination;
     }
 }

@@ -138,7 +138,7 @@ Entity data structure:
   "dynName": [ /* list of properties */ ],
   "filters": [ /* list of properties */ ],
   "listFields": [ /* list of properties */ ],
-  "details": [ /* list of entity names with referencing field */ ],
+  "details": [ /* list of entities with referencing properties */ ],
   "references": [ /* list of referenced entities and properties referencing those entities */ ]
 }
 ```
@@ -182,12 +182,12 @@ Entity data structure:
     ```json
     [
       {
-        "entity": "Article",
-        "reference": "author"
+        "entity": Article,
+        "reference": author
       },
       {
-        "entity": "Article",
-        "reference": "modified"
+        "entity": Article,
+        "reference": modified
       }
     ]
     ```

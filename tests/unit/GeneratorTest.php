@@ -1,5 +1,7 @@
 <?php
 
+use GreenCape\CodeGen\Project;
+
 class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
     private $projectFile;
@@ -59,7 +61,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProjectNameIsReplaced()
     {
-        $project = new \GreenCape\CodeGen\Project($this->projectFile);
+        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertDirectoryExists($outputDir);
@@ -70,7 +72,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testConfigValuesAreReplaced()
     {
-        $project = new \GreenCape\CodeGen\Project($this->projectFile);
+        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertContains('# ' . $project->title, file_get_contents($outputDir . '/README.md'));
@@ -82,7 +84,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testTemplateDirectiveIsRemoved()
     {
-        $project = new \GreenCape\CodeGen\Project($this->projectFile);
+        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertNotContains('<?template', file_get_contents($outputDir . '/README.md'));
