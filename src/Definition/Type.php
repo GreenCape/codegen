@@ -1,6 +1,6 @@
 <?php
 
-namespace GreenCape\CodeGen;
+namespace GreenCape\CodeGen\Definition;
 
 class Type
 {
@@ -32,7 +32,7 @@ class Type
     private function init($config)
     {
         if (is_string($config)) {
-            return $this->init($this->resolve($config));
+            $this->init($this->resolve($config));
         }
         $this->base = $config['base'] ?? 'string';
         $this->sign = $config['sign'] ?? '';

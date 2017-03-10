@@ -41,6 +41,14 @@ An entity declaration must contain a name.
 
 Entity properties can not be written.
 
+### 1203 Unknown relation type '<type>'
+
+Only 'belongsTo', 'hasMany', 'hasOne' and 'hasManyThru' relations are supported.
+
+### 1204 Relation type must be specified
+
+A releation declaration  must contain one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
+
 ### Logic Errors (90xxx)
 
 ### 9001 Properties are read-only

@@ -1,7 +1,8 @@
 <?php
 
-use GreenCape\CodeGen\Entity;
-use GreenCape\CodeGen\Project;
+use GreenCape\CodeGen\Definition\Entity;
+use GreenCape\CodeGen\Definition\Project;
+use GreenCape\CodeGen\Definition\Registry;
 use Symfony\Component\Yaml\Yaml;
 
 class SwaggerTest extends \PHPUnit\Framework\TestCase
@@ -34,7 +35,12 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     public function testSwagger()
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
-        $project->addEntity(new Entity(json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true)));
+        $project->addEntity(
+            new Entity(
+                json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true),
+                new Registry()
+            )
+        );
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)

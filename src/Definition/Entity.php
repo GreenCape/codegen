@@ -1,6 +1,6 @@
 <?php
 
-namespace GreenCape\CodeGen;
+namespace GreenCape\CodeGen\Definition;
 
 /**
  * Class Entity
@@ -17,6 +17,13 @@ namespace GreenCape\CodeGen;
  */
 class Entity
 {
+    /**
+     * The parent project
+     *
+     * @var Project
+     */
+    private $project;
+
     /**
      * The name of the entity.
      *
@@ -98,6 +105,13 @@ class Entity
     private $references = [];
 
     /**
+     * The entity registry
+     *
+     * @var Registry
+     */
+    private $registry;
+
+    /**
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
@@ -105,12 +119,12 @@ class Entity
     /**
      * Entity constructor.
      *
-     * @param array $config The entity settings
-     *
-     * @throws \Exception
+     * @param array    $config The entity settings
+     * @param Registry $registry
      */
-    public function __construct(array $config)
+    public function __construct(array $config, Registry $registry = null)
     {
+        $this->registry = $registry;
         $this->init($config);
     }
 
@@ -135,6 +149,17 @@ class Entity
         foreach ($properties['filters'] ?? [] as $propertyName) {
             $this->filters[] = $this->properties[$propertyName];
         }
+
+        if (!empty($this->registry)) {
+            $this->registry->registerEntity($this);
+        }
+
+        foreach ($properties['relations'] ?? [] as $relationDefinition) {
+            if (!isset($relationDefinition['property'])) {
+                $relationDefinition['property'] = $this->special['key'] ?? 'id';
+            }
+            $this->addRelation(new Relation($relationDefinition, $this, $this->registry), $relationDefinition['entity']);
+        }
     }
 
     /**
@@ -153,16 +178,56 @@ class Entity
         if (!empty($property->getPosition())) {
             $this->listFields[$property->getPosition()] = $property;
         }
+    }
 
-        if ($property->getType('base') == 'reference') {
-            $this->references[$property->getType('table')][] = $property;
-            $this->references['foreignKeys'][]               = $property;
+    /**
+     * Add a relation to the entity
+     *
+     * @param Relation $relation
+     * @param string   $entityName
+     *
+     * @throws \Exception
+     */
+    public function addRelation(Relation $relation, string $entityName)
+    {
+        switch ($relation->getType()) {
+
+            case 'belongsTo':
+                $this->references[$entityName][]   = $relation;
+                $this->references['foreignKeys'][] = $relation;
+                break;
+
+            case 'hasMany':
+            case 'hasOne':
+                $this->details[] = ['entity' => $relation->getEntity(), 'reference' => $relation->getReference()];
+                break;
+
+            case 'hasManyThru':
+                throw new \Exception('Not yet implemented');
+                break;
+
+            default:
+                throw new \Exception("Unknown relation type '{$relation->getType()}'", 1203);
+                break;
         }
     }
 
-    public function addDetail(Entity $entity, Property $property)
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
-        $this->details[] = ['entity' => $entity, 'reference' => $property];
+        return $this->name;
+    }
+
+    /**
+     * Add a project to the entity
+     *
+     * @param Project $project The project
+     */
+    public function setProject(Project $project)
+    {
+        $this->project = $project;
     }
 
     /**
@@ -195,14 +260,6 @@ class Entity
     public function getReferences(): array
     {
         return $this->references;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /**

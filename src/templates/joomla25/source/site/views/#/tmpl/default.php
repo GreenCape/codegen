@@ -261,10 +261,10 @@ else
 {% endif %}
 {% endfor %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
 
 		<dt><?php echo JText::_('COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_COUNT'); ?></dt>
-		<dd><?php echo JText::plural('COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_UNIT', $this->item->num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}); ?></dd>
+		<dd><?php echo JText::plural('COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_UNIT', $this->item->num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}); ?></dd>
 {% endfor %}
 
 	</dl>

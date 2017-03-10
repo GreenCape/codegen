@@ -1,6 +1,6 @@
 <?php
 
-use GreenCape\CodeGen\Project;
+use GreenCape\CodeGen\Definition\Project;
 
 class ProjectTest extends \PHPUnit\Framework\TestCase
 {

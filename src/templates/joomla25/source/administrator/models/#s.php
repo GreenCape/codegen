@@ -70,7 +70,7 @@ class {{ project.name | class }}AdminModel{{ entity.name | plural | class }} ext
 {% endfor %}
 {# override extra_fields_filter #}{# endoverride #}
 {% for detail in entity.details %}
-				'num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}',
+				'num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}',
 {% endfor %}
 {% if entity.special.featured %}
 				'{{ entity.special.featured.name }}', '{{ entity.name }}.{{ entity.special.featured.name }}',

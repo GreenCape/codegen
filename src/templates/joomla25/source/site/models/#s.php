@@ -73,8 +73,8 @@ class {{ project.name | class }}Model{{ entity.name | plural | class }} extends 
 {% endfor %}
 {# override extra_fields_filter #}{# endoverride #}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
-				'num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}', '{{ foreignEntity.name }}.{{ detail.reference }}',
+{% set foreignEntity = detail.entity %}
+				'num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}', '{{ foreignEntity.name }}.{{ detail.reference.name }}',
 {% endfor %}
 {% if entity.special.featured %}
 				'{{ entity.special.featured.name }}', '{{ entity.name }}.{{ entity.special.featured.name }}',

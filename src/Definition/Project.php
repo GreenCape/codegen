@@ -1,6 +1,8 @@
 <?php
 
-namespace GreenCape\CodeGen;
+namespace GreenCape\CodeGen\Definition;
+
+use GreenCape\CodeGen\Inflector;
 
 /**
  * Class Project
@@ -93,6 +95,13 @@ class Project
     private $entities = [];
 
     /**
+     * The entity registry
+     *
+     * @var Registry
+     */
+    private $registry;
+
+    /**
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
@@ -106,6 +115,7 @@ class Project
      */
     public function __construct(array $config)
     {
+        $this->registry = new Registry();
         $this->init($config);
     }
 
@@ -145,7 +155,7 @@ class Project
         $this->authors     = $properties['authors'] ?? [];
 
         foreach ($properties['entities'] ?? [] as $entityDefinition) {
-            $this->addEntity(new Entity($entityDefinition));
+            $this->addEntity(new Entity($entityDefinition, $this->registry));
         }
     }
 
@@ -156,6 +166,7 @@ class Project
      */
     public function addEntity(Entity $entity)
     {
+        $entity->setProject($this);
         $this->entities[$entity->name] = $entity;
     }
 

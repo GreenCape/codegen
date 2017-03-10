@@ -154,11 +154,11 @@ $saveOrder = ($listOrder == '{{ entity.storage.table }}.{{ entity.special.orderi
 {% endfor %}
 {# override extra_fields_header #}{# endoverride #}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
 
 				<?php $columnCount++; ?>
 				<th class="center"><!-- 4 -->
-					<?php echo JHtml::_('grid.sort', 'COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_COUNT', 'num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_COUNT', 'num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}', $listDirn, $listOrder); ?>
 				</th>
 {% endfor %}
 {% if entity.special.featured %}
@@ -294,15 +294,15 @@ $saveOrder = ($listOrder == '{{ entity.storage.table }}.{{ entity.special.orderi
 {% endfor %}
 {# override extra_fields #}{# endoverride #}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
 
 					<td class="center nowrap"><!-- 4 -->
 						<?php
-						$link  = 'index.php?option=com_{{ project.name | file }}&view=<<detail.classname:plural:file>>&filter_{{ detail.reference }}=' . $item->{{ property.name | variable }};
+						$link  = 'index.php?option=com_{{ project.name | file }}&view=<<detail.classname:plural:file>>&filter_{{ detail.reference.name }}=' . $item->{{ property.name | variable }};
 						$title = 'COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_DESC';
 						?>
 						<a class="hasTooltip" href="<?php echo JRoute::_($link); ?>" title="<?php echo JText::_($title); ?>">
-							<?php echo JText::plural('COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_UNIT', $item->num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}); ?>
+							<?php echo JText::plural('COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_UNIT', $item->num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}); ?>
 						</a>
 					</td>
 {% endfor %}

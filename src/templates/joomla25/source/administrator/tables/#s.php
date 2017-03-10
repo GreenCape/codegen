@@ -38,7 +38,7 @@
 {% endif %}
 {% endfor %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
  * class "{{ project.name | class }}Table<{{ foreignEntity.name | plural | class }}" as {{ foreignEntity.name }}
 {% endfor %}
  *
@@ -73,8 +73,8 @@
  * {{ entity.name }} -> user : +{{ entity.special.checkout_by.name }}
 {% endif %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
- * {{ foreignEntity.name }} -> {{ entity.name }} : +{{ detail.reference }}
+{% set foreignEntity = detail.entity %}
+ * {{ foreignEntity.name }} -> {{ entity.name }} : +{{ detail.reference.name }}
 {% endfor %}
  * @enduml
  */
@@ -521,8 +521,8 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 {% endif %}
 {% endfor %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
-	 * num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}		The number of associated {{ foreignEntity.name }} items
+{% set foreignEntity = detail.entity %}
+	 * num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}		The number of associated {{ foreignEntity.name }} items
 {% endfor %}
 {% if entity.special.created_by %}
 {% if entity.special.author_alias %}
@@ -569,7 +569,7 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 {% endif %}
 {% endfor %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
 	 * {{ foreignEntity.name }}	The {{ foreignEntity.name }} table with detail records (#__{{ foreignEntity.storage.table }})
 {% endfor %}
 {% if entity.special.created_by %}
@@ -730,13 +730,13 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 {% endif %}
 {% endfor %}
 {% for detail in entity.details %}
-{% set foreignEntity = project.entities[detail.entity] %}
+{% set foreignEntity = detail.entity %}
 
 			// Join over {{ foreignEntity.name | plural | title }} for counting
-			$query->select('COUNT(' . $db->quoteName('{{ foreignEntity.name }}.{{ foreignEntity.special.key.name }}') . ') AS ' . $db->quoteName('num_{{detail.entity | plural | variable }}_{{detail.reference | variable }}'));
+			$query->select('COUNT(' . $db->quoteName('{{ foreignEntity.name }}.{{ foreignEntity.special.key.name }}') . ') AS ' . $db->quoteName('num_{{ detail.entity.name | plural | variable }}_{{ detail.reference.name | variable }}'));
 			$query->join(
 				'LEFT', $db->quoteName('#__{{ foreignEntity.storage.table }}', '{{ foreignEntity.name }}')
-				. ' ON ' . $db->quoteName('{{ foreignEntity.name }}.{{ detail.reference }}') . ' = ' . $db->quoteName('{{ entity.name }}.{{ entity.special.key.name }}')
+				. ' ON ' . $db->quoteName('{{ foreignEntity.name }}.{{ detail.reference.name }}') . ' = ' . $db->quoteName('{{ entity.name }}.{{ entity.special.key.name }}')
 			);
 {% endfor %}
 {% if entity.special.created_by %}

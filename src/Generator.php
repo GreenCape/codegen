@@ -2,6 +2,9 @@
 
 namespace GreenCape\CodeGen;
 
+use GreenCape\CodeGen\Definition\Entity;
+use GreenCape\CodeGen\Definition\Project;
+
 class Generator
 {
     private $project;
@@ -80,9 +83,11 @@ class Generator
     /**
      * @param Template $template
      * @param string   $source
-     * @param array    $entity
+     * @param Entity   $entity
+     *
+     * @throws \Exception
      */
-    private function render($template, $source, $entity = null)
+    private function render(Template $template, $source, Entity $entity = null)
     {
         $destination = $this->getDestinationPath($source, $entity);
 
@@ -104,12 +109,12 @@ class Generator
     }
 
     /**
-     * @param       $source
-     * @param array $entity
+     * @param        $source
+     * @param Entity $entity
      *
      * @return string
      */
-    private function getDestinationPath($source, $entity = null): string
+    private function getDestinationPath($source, Entity $entity = null): string
     {
         $name        = is_null($entity) ? 'entity' : $entity->name;
         $replace     = [$this->templatePath => $this->outputPath, '$' => $this->inflector->fileName($this->project->name), '#s' => $this->inflector->fileName($this->inflector->plural($name)), '#' => $this->inflector->fileName($name),];

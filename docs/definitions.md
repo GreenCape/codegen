@@ -83,7 +83,9 @@ The information is defined in a JSON file, usually `project.json`.
     "modified_by"
   ],
   "properties": [
-  ]
+  ],
+  "relations": {
+  }
 }
 ```
 
@@ -125,7 +127,11 @@ The information is defined in a JSON file, usually `project.json`.
 
 + `properties`
 
-    A list of the entity's properties. See next section for details.
+    A list of the entity's properties. See below for details.
+
++ `relations`
+
+    A list of the entity's relations. See below for details.
 
 ## Property Definition
 
@@ -231,11 +237,11 @@ The information is defined in a JSON file, usually `project.json`.
     },
     "category": {
       "base": "reference",      
-      "table": "categories", # <ref>
+      "table": "categories",
       "entity": "Category",
-      "key": "id", # <refid>
-      "title": "name", # <refname>
-      "constraint": "" # <refcond>
+      "key": "id",
+      "title": "name",
+      "constraint": ""
     }
     ```
 
@@ -258,7 +264,7 @@ The information is defined in a JSON file, usually `project.json`.
 
     - `key`
 
-        The primary key (id) of the entity
+        The primary key (id) of the entity. Must be defined before any relation.
 
     - `title`
 
@@ -359,3 +365,65 @@ The information is defined in a JSON file, usually `project.json`.
 + `validation`
 + `index`
 
+## Relation Definition
+
+```json
+  "relations": [
+    {
+      "name": "parent",
+      "type": "belongsTo",
+      "property": "parent_id",
+      "entity": "Article",
+      "reference": "id"
+    },
+    {
+      "name": "author",
+      "type": "belongsTo",
+      "property": "created_by",
+      "entity": "User",
+      "reference": "id"
+    },
+    {
+      "name": "children",
+      "type": "hasMany",
+      "property": "id",
+      "entity": "Article",
+      "reference": "parent_id"
+    },
+    {
+      "type": "hasOne",
+      "entity": "ArticleAddition"
+    },
+    {
+      "type": "hasManyThru",
+      "property": "id",
+      "entity": "Tag",
+      "reference": "id",
+      "map": "ArticleTagMap"
+    }
+  ]
+```
+
++ `name`
+
+*Optional.* The name of a (virtual) property to contain the related entity or entities. If omitted, `name` is derived from the name of the related entity.
+
++ `type`
+
+The type of relation, one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
+
++ `property`
+
+*Optional.* The property in the current entity used for the relation. If omitted, the property with the `key` role is used.
+
++ `entity`
+
+The name of the related entity.
+
++ `reference`
+
+*Optional.* The property in the other entity used for the relation. If omitted, the property with the `key` role is used.
+
++ `map`
+
+*Optional.* For 'hasManyThru' relations, a `map` entity may be specified. If omitted, it will be derived from the entities involved (entity names in alphabetic order with a 'Map' suffix).

@@ -1,6 +1,6 @@
 <?php
 
-namespace GreenCape\CodeGen;
+namespace GreenCape\CodeGen\Definition;
 
 class Option
 {
