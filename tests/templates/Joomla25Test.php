@@ -3,6 +3,7 @@
 use GreenCape\CodeGen\Definition\Entity;
 use GreenCape\CodeGen\Definition\Project;
 use GreenCape\CodeGen\Definition\Registry;
+use Overtrue\PHPLint\Linter;
 
 class Joomla25Test extends \PHPUnit\Framework\TestCase
 {
@@ -16,7 +17,7 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
     {
         $basePath = dirname(__DIR__);
 
-        $this->projectFile = $basePath . '/fixtures/project1.json';
+        $this->projectFile = $basePath . '/fixtures/project2.json';
         $this->templateDir = dirname($basePath) . '/src/templates/joomla25';
         $this->outputDir = $basePath . '/tmp/joomla25';
     }
@@ -34,12 +35,6 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
     public function testJoomla25()
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
-        $project->addEntity(
-            new Entity(
-                json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true),
-                new Registry()
-            )
-        );
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
@@ -47,8 +42,25 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
             ->output($this->outputDir)
             ->generate();
 
-        $this->assertFileExists($this->outputDir . '/source/administrator/test_project.php');
+        $this->assertFileExists($this->outputDir . '/source/administrator/all_relations_project.php');
         $this->assertFileExists($this->outputDir . '/source/administrator/controllers/article.php');
         $this->assertFileExists($this->outputDir . '/source/administrator/controllers/articles.php');
+    }
+
+    /**
+     * @testdox The generated PHP files do not contain syntax errors
+     */
+    public function testLint()
+    {
+        $linter = new Linter($this->outputDir, ['build'], ['php']);
+
+        $errors = [];
+
+        // Compress errors for output
+        foreach ($linter->lint() as $error) {
+            $errors[] = $error['error'] . ' in ' . str_replace($this->outputDir . '/', '', $error['file']);
+        }
+
+        $this->assertEquals('', implode("\n", $errors));
     }
 }

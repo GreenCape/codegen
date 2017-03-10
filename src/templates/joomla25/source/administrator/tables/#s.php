@@ -216,7 +216,7 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 			$this->{{ entity.special.ordering.name }} = $this->getNextOrder({% if entity.special.category %}$this->_db->quoteName('{{ entity.special.category.name }}').'=' . $this->_db->Quote($this->{{ entity.special.category.name }}).' AND {{ entity.special.published.name }}>=0'{% else %}'{{ entity.special.published.name }}>=0'{% endif %});
 		}
 
-{% endif %})
+{% endif %}
 {% if not entity.special.published and entity.special.ordering %}
 		if (empty($this->{{ entity.special.ordering.name }}))
 		{
@@ -224,13 +224,13 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 			$this->{{ entity.special.ordering.name }} = $this->getNextOrder({% if entity.special.category %}$this->_db->quoteName('{{ entity.special.category.name }}').'=' . $this->_db->Quote($this->{{ entity.special.category.name }}){% endif %});
 		}
 
-{% endif %})
+{% endif %}
 		return parent::check();
 	}
 {# endoverride #}
 {# override store #}
 {% if (entity.special.modified and entity.special.modified_by and entity.special.created and entity.special.created_by) or entity.special.alias %}
-
+ 
 	/**
 	 * Store a row in the database from the JTable instance properties
 	 *
@@ -285,7 +285,7 @@ class {{ project.name | class }}Table{{ entity.name | plural | class }} extends 
 		// Attempt to store the {{ entity.name | title }} data
 		return parent::store($updateNulls);
 	}
-{% endif %})
+{% endif %}
 {# endoverride #}
 {% if entity.special.published %}
 {# override publish #}

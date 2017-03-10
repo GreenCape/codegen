@@ -1,0 +1,219 @@
+{
+  "name": "all_relations_project",
+  "title": "Test Project with Relations",
+  "version": "1.0.0",
+  "description": "A minimal test project containing all types of relations",
+  "type": "test",
+  "license": "MIT",
+  "copyright": "BSDS Braczek Software- und DatenSysteme",
+  "authors": [
+    {
+      "name": "Niels Braczek",
+      "email": "nbraczek@bsds.de"
+    }
+  ],
+  "entities": [
+    {
+      "name": "User",
+      "properties": [
+        {
+          "name": "id",
+          "type": "integer",
+          "role": "key",
+          "label": "User ID",
+          "input": "none",
+          "description": "The unique ID of the user"
+        },
+        {
+          "name": "username",
+          "type": "string",
+          "label": "Username",
+          "description": "The username",
+          "validation": [
+            {
+              "rule": "maxlen",
+              "value": "64"
+            }
+          ]
+        },
+        {
+          "name": "realname",
+          "type": "string",
+          "role": "title",
+          "label": "Name",
+          "description": "The name of the user"
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "label": "Password",
+          "description": "The password"
+        }
+      ],
+      "relations": [
+        {
+          "name": "articles",
+          "type": "hasMany",
+          "property": "id",
+          "entity": "Article",
+          "reference": "author_id"
+        },
+        {
+          "name": "profile",
+          "type": "hasOne",
+          "property": "id",
+          "entity": "Profile",
+          "reference": "id"
+        }
+      ]
+    },
+    {
+      "name": "Article",
+      "role": "main",
+      "properties": [
+        {
+          "name": "id",
+          "type": "integer",
+          "role": "key",
+          "label": "Article ID",
+          "input": "none",
+          "description": "The unique ID of the article"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "role": "title",
+          "label": "Title",
+          "description": "The title of the article",
+          "validation": [
+            {
+              "rule": "maxlen",
+              "value": "64"
+            }
+          ]
+        },
+        {
+          "name": "author_id",
+          "type": "integer",
+          "role": "author",
+          "label": "Author",
+          "description": "The author of the article"
+        }
+      ],
+      "relations": [
+        {
+          "name": "author",
+          "type": "belongsTo",
+          "property": "author_id",
+          "entity": "User",
+          "reference": "id"
+        },
+        {
+          "name": "tags",
+          "type": "hasManyThru",
+          "property": "id",
+          "entity": "Tag",
+          "reference": "article_id",
+          "map": "ArticleTagMap"
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "properties": [
+        {
+          "name": "id",
+          "type": "integer",
+          "role": "key",
+          "label": "User ID",
+          "description": "The ID of the user"
+        },
+        {
+          "name": "cv",
+          "type": "richtext",
+          "label": "Curriculum vitae",
+          "description": "The resume of the user"
+        }
+      ],
+      "relations": [
+        {
+          "name": "user",
+          "type": "belongsTo",
+          "property": "id",
+          "entity": "User",
+          "reference": "id"
+        }
+      ]
+    },
+    {
+      "name": "Tag",
+      "properties": [
+        {
+          "name": "id",
+          "type": "integer",
+          "role": "key",
+          "label": "Tag ID",
+          "input": "none",
+          "description": "The unique ID of the tag"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "role": "title",
+          "label": "Tag",
+          "description": "The tag itself",
+          "validation": [
+            {
+              "rule": "maxlen",
+              "value": "32"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "name": "Article",
+          "type": "hasManyThru",
+          "property": "id",
+          "entity": "Article",
+          "reference": "tag_id",
+          "map": "ArticleTagMap"
+        }
+      ]
+    },
+    {
+      "name": "ArticleTagMap",
+      "role": "map",
+      "properties": [
+        {
+          "name": "article_id",
+          "type": "integer",
+          "label": "Article",
+          "description": "The article"
+        },
+        {
+          "name": "tag_id",
+          "type": "integer",
+          "label": "Tag",
+          "description": "The tag"
+        }
+      ],
+      "relations": [
+        {
+          "name": "Article",
+          "type": "belongsTo",
+          "property": "article_id",
+          "entity": "Article",
+          "reference": "id"
+        },
+        {
+          "name": "Tag",
+          "type": "belongsTo",
+          "property": "tag_id",
+          "entity": "Tag",
+          "reference": "id"
+        }
+      ]
+    }
+  ]
+}

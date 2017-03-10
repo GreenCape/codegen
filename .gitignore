@@ -1,3 +1,4 @@
 /build/
 /tests/tmp/
 /vendor/
+/.phplint-cache

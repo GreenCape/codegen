@@ -17,7 +17,7 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     {
         $basePath = dirname(__DIR__);
 
-        $this->projectFile = $basePath . '/fixtures/project1.json';
+        $this->projectFile = $basePath . '/fixtures/project2.json';
         $this->templateDir = dirname($basePath) . '/src/templates/swagger.io';
         $this->outputDir = $basePath . '/tmp/swagger.io';
     }
@@ -35,12 +35,6 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     public function testSwagger()
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
-        $project->addEntity(
-            new Entity(
-                json_decode(file_get_contents(dirname($this->projectFile) . '/entities/article.json'), true),
-                new Registry()
-            )
-        );
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
@@ -50,8 +44,18 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
 
         $swagger = Yaml::parse(file_get_contents($this->outputDir . '/swagger.yml'));
 
-        $this->assertEquals('First Test Project', $swagger['info']['title']);
+        $this->assertEquals('Test Project with Relations', $swagger['info']['title']);
         $this->assertArrayHasKey('/articles', $swagger['paths']);
         $this->assertArrayHasKey('Article', $swagger['definitions']);
+    }
+
+    /**
+     * @testdox The generated YAML file is valid against the Swagger 2.0 (OpenAPI 2.0) schema and spec
+     */
+    public function testValidity()
+    {
+        $output = `docker run --rm -v \$PWD:/src advancedtelematic/swagger-cli swagger validate tests/tmp/swagger.io/swagger.yml`;
+
+        $this->assertEquals('tests/tmp/swagger.io/swagger.yml is valid', trim($output));
     }
 }

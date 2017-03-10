@@ -80,7 +80,7 @@ class {{ project.name | class }}AdminView{{ entity.name | plural | class }} exte
 {% endfor %}
 {% if entity.special.category and entity.special.ordering %}
 		$this->categories = $this->get('CategoryOrders');
-{% endif %}}
+{% endif %}
 		$this->items      = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state      = $this->get('State');

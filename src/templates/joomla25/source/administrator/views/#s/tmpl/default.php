@@ -298,7 +298,7 @@ $saveOrder = ($listOrder == '{{ entity.storage.table }}.{{ entity.special.orderi
 
 					<td class="center nowrap"><!-- 4 -->
 						<?php
-						$link  = 'index.php?option=com_{{ project.name | file }}&view=<<detail.classname:plural:file>>&filter_{{ detail.reference.name }}=' . $item->{{ property.name | variable }};
+						$link  = 'index.php?option=com_{{ project.name | file }}&view={{ foreignEntity.name | plural | file }}&filter_{{ detail.reference.name }}=' . $item->{{ entity.special.key.name | variable }};
 						$title = 'COM_{{ project.name | constant }}_{{ entity.name | constant }}_FIELD_{{ foreignEntity.name | constant }}_DESC';
 						?>
 						<a class="hasTooltip" href="<?php echo JRoute::_($link); ?>" title="<?php echo JText::_($title); ?>">

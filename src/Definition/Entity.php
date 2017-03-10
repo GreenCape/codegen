@@ -203,7 +203,7 @@ class Entity
                 break;
 
             case 'hasManyThru':
-                throw new \Exception('Not yet implemented');
+                #throw new \Exception('Not yet implemented');
                 break;
 
             default:
