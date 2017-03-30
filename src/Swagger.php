@@ -23,7 +23,7 @@ class Swagger
      */
     public function configHelp($language)
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli config-help {$language}`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli config-help {$language}`;
     }
 
     /**
@@ -35,7 +35,7 @@ class Swagger
      */
     public function generate($paramString)
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli generate {$paramString}`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli generate {$paramString}`;
     }
 
     /**
@@ -45,7 +45,7 @@ class Swagger
      */
     public function help($command)
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli help {$command}`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli help {$command}`;
     }
 
     /**
@@ -53,7 +53,7 @@ class Swagger
      */
     public function languages()
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli langs`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli langs`;
     }
 
     /**
@@ -68,7 +68,7 @@ class Swagger
      */
     public function meta($paramString)
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli meta {$paramString}`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli meta {$paramString}`;
     }
 
     /**
@@ -76,6 +76,6 @@ class Swagger
      */
     public function version()
     {
-        `docker run --rm -v \${PWD}:/local swaggerapi/swagger-codegen-cli version`;
+        `docker run --rm -u \${UID} -v \${PWD}:/local swaggerapi/swagger-codegen-cli version`;
     }
 }
