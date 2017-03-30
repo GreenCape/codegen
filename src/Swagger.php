@@ -82,9 +82,21 @@ class Swagger
     /**
      * @param $command
      * @param $paramString
+     *
+     * @return mixed
      */
     private function execute($command, $paramString = '')
     {
-        return `docker run --rm --volume \${PWD}:/local swaggerapi/swagger-codegen-cli {$command} {$paramString}`;
+        $dir    = getcwd();
+        $userId = getmyuid() . ':' . getmygid();
+        $volume = "--volume $dir:/local";
+        $image  = 'swaggerapi/swagger-codegen-cli';
+        $output = [];
+        $return = 0;
+
+        $dockerCommand = "docker run --rm $volume --user $userId --name temp_swagger $image {$command} {$paramString}";
+        exec($dockerCommand, $output, $return);
+
+        return $output;
     }
 }
