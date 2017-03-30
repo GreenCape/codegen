@@ -13,7 +13,7 @@ paths:
 {% for entity in project.entities %}
   /{{ entity.name | plural | dash }}:
     get:
-      summary: {{ entity.name | plural | title  }}
+      summary: List {{ entity.name | plural | title  }}
       description: |
         The {{ entity.name | plural | title }} endpoint returns information about the {{ entity.name | plural | title | lower }}.
         The response includes the display name and other details about each {{ entity.name | singular | title | lower }},
@@ -31,6 +31,37 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: Create {{ entity.name | singular | title  }}
+      description: |
+      tags:
+        - {{ entity.name | plural | title }}
+      responses:
+        200:
+          description: The {{ entity.name | singular | title | lower }} with the newly created ID.
+          schema:
+            $ref: '#/definitions/{{ entity.name | singular | class }}'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /{{ entity.name | plural | dash }}/{id}:
+    get:
+      summary: Create {{ entity.name | singular | title  }}
+      description: |
+      tags:
+        - {{ entity.name | plural | title }}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description:  The {{ entity.name | singular | title | lower }}
+          schema:
+            $ref: '#/definitions/{{ entity.name | singular | class }}'
 {% endfor %}
 definitions:
 {% for entity in project.entities %}

@@ -2,3 +2,4 @@
 /tests/tmp/
 /vendor/
 /.phplint-cache
+/docs/examples/
