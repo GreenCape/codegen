@@ -32,7 +32,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Create {{ entity.name | singular | title  }}
+      summary: Create {{ entity.name | singular | title }}
       description: |
       tags:
         - {{ entity.name | plural | title }}
@@ -47,7 +47,7 @@ paths:
             $ref: '#/definitions/Error'
   /{{ entity.name | plural | dash }}/{id}:
     get:
-      summary: Create {{ entity.name | singular | title  }}
+      summary: Get the {{ entity.name | singular | title }} with the given ID.
       description: |
       tags:
         - {{ entity.name | plural | title }}
