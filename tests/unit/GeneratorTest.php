@@ -1,5 +1,7 @@
 <?php
 
+namespace GreenCape\CodeGen\Tests\Unit;
+
 use GreenCape\CodeGen\Definition\Project;
 
 class GeneratorTest extends \PHPUnit\Framework\TestCase
@@ -16,7 +18,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
 
         $this->projectFile = $basePath . '/fixtures/project1.json';
         $this->templateDir = $basePath . '/fixtures/template1';
-        $this->outputDir = $basePath . '/tmp';
+        $this->outputDir   = $basePath . '/tmp';
     }
 
     public function tearDown()
@@ -32,8 +34,7 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
     public function testGeneratesOutputDirectory()
     {
         $generator = new \GreenCape\CodeGen\Generator();
-        $generator
-            ->output($this->outputDir);
+        $generator->output($this->outputDir);
 
         $this->assertDirectoryExists($this->outputDir);
     }
@@ -43,15 +44,14 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testClearsOutputDirectory()
     {
-        $testDir = $this->outputDir . '/test_project_1';
+        $testDir  = $this->outputDir . '/test_project_1';
         $testFile = $testDir . '/should_not_be.here';
 
         mkdir($testDir, 0777, true);
         touch($testFile);
 
         $generator = new \GreenCape\CodeGen\Generator();
-        $generator
-            ->output($this->outputDir);
+        $generator->output($this->outputDir);
 
         $this->assertFileNotExists($testFile);
     }
@@ -61,10 +61,26 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProjectNameIsReplaced()
     {
-        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
+        $project   = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertDirectoryExists($outputDir);
+    }
+
+    /**
+     * @param $project
+     *
+     * @return string
+     */
+    private function generate($project): string
+    {
+        (new \GreenCape\CodeGen\Generator())->project($project)
+                                            ->template($this->templateDir)
+                                            ->output($this->outputDir)
+                                            ->generate()
+        ;
+
+        return $this->outputDir . '/' . $project->name;
     }
 
     /**
@@ -72,36 +88,20 @@ class GeneratorTest extends \PHPUnit\Framework\TestCase
      */
     public function testConfigValuesAreReplaced()
     {
-        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
+        $project   = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertContains('# ' . $project->title, file_get_contents($outputDir . '/README.md'));
     }
-
 
     /**
      * @testdox Template directive is removed
      */
     public function testTemplateDirectiveIsRemoved()
     {
-        $project = new Project(json_decode(file_get_contents($this->projectFile), true));
+        $project   = new Project(json_decode(file_get_contents($this->projectFile), true));
         $outputDir = $this->generate($project);
 
         $this->assertNotContains('<?template', file_get_contents($outputDir . '/README.md'));
-    }
-
-    /**
-     * @param $project
-     * @return string
-     */
-    private function generate($project): string
-    {
-        (new \GreenCape\CodeGen\Generator())
-            ->project($project)
-            ->template($this->templateDir)
-            ->output($this->outputDir)
-            ->generate();
-
-        return $this->outputDir . '/' . $project->name;
     }
 }

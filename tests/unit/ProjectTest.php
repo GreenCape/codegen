@@ -1,5 +1,7 @@
 <?php
 
+namespace GreenCape\CodeGen\Tests\Unit;
+
 use GreenCape\CodeGen\Definition\Project;
 
 class ProjectTest extends \PHPUnit\Framework\TestCase
@@ -28,7 +30,7 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectExceptionCode(9001);
 
-        $project = new Project(json_decode(file_get_contents($this->templateDir . '/project1.json'), true));
+        $project       = new Project(json_decode(file_get_contents($this->templateDir . '/project1.json'), true));
         $project->name = 'new_name';
     }
 }

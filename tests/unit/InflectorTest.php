@@ -1,22 +1,19 @@
 <?php
 
+namespace GreenCape\CodeGen\Tests\Unit;
+
+use GreenCape\CodeGen\Inflector;
+
 class InflectorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  \GreenCape\CodeGen\Inflector */
+    /** @var  Inflector */
     private $inflector;
 
-    private $testData = [
-        'title' => 'Test Data',
-        'variable' => 'testData',
-        'class' => 'TestData',
-        'table' => 'test_data',
-        'dash' => 'test-data',
-        'constant' => 'TEST_DATA',
-    ];
+    private $testData = ['title' => 'Test Data', 'variable' => 'testData', 'class' => 'TestData', 'table' => 'test_data', 'dash' => 'test-data', 'constant' => 'TEST_DATA',];
 
     public function setUp()
     {
-        $this->inflector = new GreenCape\CodeGen\Inflector();
+        $this->inflector = new Inflector();
     }
 
     public function inflectionData()
@@ -25,11 +22,13 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
         foreach ($this->testData as $key => $value) {
             $cases[$key] = [$key, $value];
         }
+
         return $cases;
     }
 
     /**
      * @dataProvider inflectionData
+     *
      * @param $filter
      * @param $expected
      */
@@ -40,6 +39,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider inflectionData
+     *
      * @param $filter
      * @param $expected
      */
@@ -50,6 +50,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider inflectionData
+     *
      * @param $filter
      * @param $expected
      */
@@ -60,6 +61,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider inflectionData
+     *
      * @param $filter
      * @param $expected
      */
@@ -70,6 +72,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider inflectionData
+     *
      * @param $filter
      * @param $expected
      */
@@ -80,15 +83,12 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     public function numerationData()
     {
-        return [
-            ['person', 'people'],
-            ['test', 'tests'],
-            ['entity', 'entities'],
-        ];
+        return [['person', 'people'], ['test', 'tests'], ['entity', 'entities'],];
     }
 
     /**
      * @dataProvider numerationData
+     *
      * @param $singular
      * @param $plural
      */
@@ -99,6 +99,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider numerationData
+     *
      * @param $singular
      * @param $plural
      */

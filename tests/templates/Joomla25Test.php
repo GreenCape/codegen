@@ -1,8 +1,8 @@
 <?php
 
-use GreenCape\CodeGen\Definition\Entity;
+namespace GreenCape\CodeGen\Tests\Templates;
+
 use GreenCape\CodeGen\Definition\Project;
-use GreenCape\CodeGen\Definition\Registry;
 use Overtrue\PHPLint\Linter;
 
 class Joomla25Test extends \PHPUnit\Framework\TestCase

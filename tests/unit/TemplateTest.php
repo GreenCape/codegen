@@ -1,5 +1,7 @@
 <?php
 
+namespace GreenCape\CodeGen\Tests\Unit;
+
 class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     private $templateDir;

@@ -1,10 +1,14 @@
 <?php
 
+namespace GreenCape\CodeGen\Tests\Unit;
+
 use GreenCape\CodeGen\Definition\Entity;
 use GreenCape\CodeGen\Definition\Registry;
 
 class RegistryTest extends \PHPUnit\Framework\TestCase
 {
+    private $called;
+
     public function testCallsForUnregisteredEntitiesAreStashed()
     {
         $called = 0;
@@ -53,8 +57,6 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(1, $called, 'Callback should have been called.');
     }
-
-    private $called;
 
     /**
      * @testdox Callback for registerCallback() with a closure can change private object properties
