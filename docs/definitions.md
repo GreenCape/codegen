@@ -84,8 +84,8 @@ The information is defined in a JSON file, usually `project.json`.
   ],
   "properties": [
   ],
-  "relations": {
-  }
+  "relations": [
+  ]
 }
 ```
 
@@ -396,10 +396,15 @@ The information is defined in a JSON file, usually `project.json`.
     },
     {
       "type": "hasManyThru",
-      "property": "id",
       "entity": "Tag",
       "reference": "id",
       "map": "ArticleTagMap"
+    },
+    {
+      "type": "hasManyThru",
+      "property": "tag_ids",
+      "entity": "Tag",
+      "reference": "id",
     }
   ]
 ```
@@ -414,7 +419,7 @@ The type of relation, one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
 
 + `property`
 
-*Optional.* The property in the current entity used for the relation. If omitted, the property with the `key` role is used.
+*Optional.* The property in the current entity used for the relation. If omitted, the property with the `key` role is used. For 'hasManyThru' relations, `property` contains the list of foreign keys directly (fx. as a JSON string). 
 
 + `entity`
 
@@ -426,4 +431,31 @@ The name of the related entity.
 
 + `map`
 
-*Optional.* For 'hasManyThru' relations, a `map` entity may be specified. If omitted, it will be derived from the entities involved (entity names in alphabetic order with a 'Map' suffix).
+*Optional.* For 'hasManyThru' relations, a `map` entity may be specified. If omitted and no `property` specified, the name of the mapping entity will be derived from the entities involved (entity names in alphabetic order with a 'Map' suffix).
+
+### hasManyThru
+
+**Example 1:**
+
+```json
+    {
+      "type": "hasManyThru",
+      "entity": "Tag",
+      "map": "ArticleTagMap"
+    }
+```
+
+An Article has many Tags. The relations are stored in an ArticleTagMap, which contains foreign keys to Articles and to Tags.
+
+**Example 2:**
+
+```json
+    {
+      "type": "hasManyThru",
+      "property": "tag_ids",
+      "entity": "Tag",
+      "reference": "id"
+    }
+```
+
+An Article has many Tags. The relations are stored in the `tag_ids` property of the Article, for example as a JSON string (details will be provided with the `tag_ids` property), which contains a list of tag "id"s.
