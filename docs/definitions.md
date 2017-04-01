@@ -419,7 +419,7 @@ The type of relation, one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
 
 + `property`
 
-*Optional.* The property in the current entity used for the relation. If omitted, the property with the `key` role is used. For 'hasManyThru' relations, `property` contains the list of foreign keys directly (fx. as a JSON string). 
+*Optional.* The property in the current entity used for the relation. If omitted, the property with the `key` role is used. For 'hasManyThru' relations, `property` contains the list of foreign keys directly (fx. as a JSON or CSV string). 
 
 + `entity`
 
