@@ -22,11 +22,6 @@ class Type
         $this->init($config);
     }
 
-    public function get($property)
-    {
-        return $this->{$property};
-    }
-
     /**
      * @param $config
      */
@@ -36,36 +31,21 @@ class Type
             $this->init($this->resolve($config));
         }
 
-        $this->len = $config['len'] ?? 255;
-
-        switch ($config['type'] ?? 'string') {
-            case 'password':
-                $this->type = 'string';
-                $this->input = 'password';
-                $this->mysql = "VARCHAR({$this->len})";
-                $this->php = $this->type;
-                break;
-
-            case 'richtext':
-                $this->type  = 'string';
-                $this->input = 'editor';
-                $this->mysql = 'MEDIUMTEXT';
-                $this->php = $this->type;
-                break;
-
-            default:
-                $this->type = $config['type'] ?? 'string';
-                $this->mysql = $this->type;
-                $this->php = $this->type;
-                break;
-        }
-
-        $this->sign = $config['sign'] ?? '';
-        $this->null = $config['null'] ?? 'true';
+        $this->len   = $config['len'] ?? 255;
+        $this->type  = $config['type'] ?? 'string';
+        $this->mysql = $this->type;
+        $this->php   = $this->type;
+        $this->sign  = $config['sign'] ?? '';
+        $this->null  = $config['null'] ?? 'true';
     }
 
     private function resolve($config)
     {
         return ['type' => $config,];
+    }
+
+    public function get($property)
+    {
+        return $this->{$property};
     }
 }
