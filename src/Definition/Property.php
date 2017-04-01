@@ -117,28 +117,28 @@ class Property
         $this->init($config);
     }
 
-    private function init($properties)
+    private function init($property)
     {
-        $this->name        = $properties['name'] ?? 'unnamed';
-        $this->role        = $properties['role'] ?? '';
-        $this->input       = $properties['input'] ?? '';
-        $this->label       = $properties['label'] ?? '';
-        $this->description = $properties['description'] ?? '';
-        $this->hint        = $properties['hint'] ?? '';
-        $this->translate   = $properties['translate'] ?? '';
-        $this->search      = $properties['search'] ?? '';
-        $this->default     = $properties['default'] ?? '';
-        $this->position    = intval($properties['position'] ?? 0);
-        $this->form        = $properties['form'] ?? 'record';
-        $this->index       = $properties['index'] ?? '';
+        $this->name        = $property['name'] ?? 'unnamed';
+        $this->role        = $property['role'] ?? '';
+        $this->input       = $property['input'] ?? '';
+        $this->label       = $property['label'] ?? '';
+        $this->description = $property['description'] ?? '';
+        $this->hint        = $property['hint'] ?? '';
+        $this->translate   = $property['translate'] ?? '';
+        $this->search      = $property['search'] ?? '';
+        $this->default     = $property['default'] ?? '';
+        $this->position    = intval($property['position'] ?? 0);
+        $this->form        = $property['form'] ?? 'record';
+        $this->index       = $property['index'] ?? '';
 
-        $this->type = new Type($properties['type'] ?? '');
+        $this->type = new Type($property);
 
-        foreach ($properties['options'] ?? [] as $option) {
+        foreach ($property['options'] ?? [] as $option) {
             $this->addOption(new Option($option));
         }
 
-        foreach ($properties['validation'] ?? [] as $validation) {
+        foreach ($property['validation'] ?? [] as $validation) {
             $this->addValidation(new Validation($validation));
         }
     }
@@ -164,7 +164,7 @@ class Property
     /**
      * @return string
      */
-    public function getType($index = 'base'): string
+    public function getType($index = 'type'): string
     {
         return $this->type->get($index);
     }

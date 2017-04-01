@@ -4,10 +4,11 @@ namespace GreenCape\CodeGen\Definition;
 
 class Type
 {
-    private $base;
+    private $type;
     private $sign;
     private $len;
     private $null;
+    private $input;
     private $mysql;
     private $php;
 
@@ -34,17 +35,37 @@ class Type
         if (is_string($config)) {
             $this->init($this->resolve($config));
         }
-        $this->base = $config['base'] ?? 'string';
-        $this->sign = $config['sign'] ?? '';
-        $this->len  = $config['len'] ?? 255;
-        $this->null = $config['null'] ?? 'true';
 
-        $this->mysql = 'MYSQL_TYPE';
-        $this->php   = 'PHP_TYPE';
+        $this->len = $config['len'] ?? 255;
+
+        switch ($config['type'] ?? 'string') {
+            case 'password':
+                $this->type = 'string';
+                $this->input = 'password';
+                $this->mysql = "VARCHAR({$this->len})";
+                $this->php = $this->type;
+                break;
+
+            case 'richtext':
+                $this->type  = 'string';
+                $this->input = 'editor';
+                $this->mysql = 'MEDIUMTEXT';
+                $this->php = $this->type;
+                break;
+
+            default:
+                $this->type = $config['type'] ?? 'string';
+                $this->mysql = $this->type;
+                $this->php = $this->type;
+                break;
+        }
+
+        $this->sign = $config['sign'] ?? '';
+        $this->null = $config['null'] ?? 'true';
     }
 
     private function resolve($config)
     {
-        return ['base' => $config,];
+        return ['type' => $config,];
     }
 }
