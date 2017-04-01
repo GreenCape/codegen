@@ -77,7 +77,9 @@ definitions:
 {% if property.type == 'integer' %}
         format: int32
 {% endif %}
+{% if property.description %}
         description: {{ property.description }}
+{% endif %}
 {% endfor %}
 {% endfor %}
   Error:
