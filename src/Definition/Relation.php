@@ -89,17 +89,26 @@ class Relation
 
         $this->type = $properties['type'];
 
+        if (empty($properties['property'])) {
+            $this->property = $current->getSpecial()['key'];
+        } else {
+            $this->property = $properties['property'];
+        }
+
         /*
          * Preset with placeholders, because it could be an external entity. Since the entity is created without the
          * registry, it will be overwritten, if a definition for the entity is encountered.
          */
-        $this->entity    = new Entity(['name' => $properties['entity']]);
+        $this->entity = new Entity(['name' => $properties['entity']]);
         $this->reference = new Property(['name' => $properties['reference'] ?? 'id']);
 
         $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties, $current) {
-            $this->property  = $current->getProperties()[$properties['property']];
-            $this->entity    = $entity;
-            $this->reference = $entity->getProperties()[$properties['reference']] ?? $entity->getSpecial()['key'];
+            $this->entity = $entity;
+            if (empty($properties['reference'])) {
+                $this->reference = $entity->getSpecial()['key'];
+            } else {
+                $entity->getProperties()[$properties['reference']];
+            }
         });
 
         if (empty($properties['map'])) {

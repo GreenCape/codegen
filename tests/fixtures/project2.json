@@ -111,9 +111,7 @@
         {
           "name": "tags",
           "type": "hasManyThru",
-          "property": "id",
           "entity": "Tag",
-          "reference": "article_id",
           "map": "ArticleTagMap"
         }
       ]
@@ -174,9 +172,7 @@
         {
           "name": "Article",
           "type": "hasManyThru",
-          "property": "id",
           "entity": "Article",
-          "reference": "tag_id",
           "map": "ArticleTagMap"
         }
       ]
