@@ -1,0 +1,11 @@
+{
+    "name": "{{ property.name }}",
+    "type": "{{ property.type }}",
+    "options": {
+{% set comma = '' %}
+{% for option in property.options %}
+        {{ comma }} "{{ option.key }}": "{{ option.value }}"
+{% set comma = ',' %}
+{% endfor %}
+    }
+}

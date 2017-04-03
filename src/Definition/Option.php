@@ -23,6 +23,27 @@ class Option
      */
     use ReadOnlyGuard;
 
+    public function __construct($option)
+    {
+        $this->init($option);
+    }
+
+    /**
+     * @param $option
+     */
+    private function init($option)
+    {
+        if (is_array($option)) {
+            $this->key   = $option['key'];
+            $this->value = $option['value'];
+
+            return;
+        }
+
+        $this->key   = $option;
+        $this->value = $option;
+    }
+
     /**
      * @return int|string
      */

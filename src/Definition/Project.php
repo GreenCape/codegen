@@ -155,9 +155,6 @@ class Project
         $this->authors     = $properties['authors'] ?? [];
 
         foreach ($properties['entities'] ?? [] as $entityDefinition) {
-            if (empty($entityDefinition)) {
-                continue;
-            }
             $this->addEntity(new Entity($entityDefinition, $this->registry));
         }
     }

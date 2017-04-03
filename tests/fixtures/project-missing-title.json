@@ -1,0 +1,14 @@
+{
+  "name": "test_project",
+  "version": "1.0.0",
+  "description": "A dummy test project",
+  "type": "test",
+  "license": "MIT",
+  "copyright": "BSDS Braczek Software- und DatenSysteme",
+  "authors": [
+    {
+      "name": "Niels Braczek",
+      "email": "nbraczek@bsds.de"
+    }
+  ]
+}

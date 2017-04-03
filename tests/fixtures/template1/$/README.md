@@ -1,5 +1,7 @@
 <?template scope="application"?>
-# {{ project.title }}
+# {{ project.title }}{% if project.version %} Version {{ project.version }}{% endif %}{% if project.build %} Build {{ project.build }}{% endif %}
+
+This is the documentation of the {{ project.title }} {{ project.type }}.
 
 {{ project.description }}
 
