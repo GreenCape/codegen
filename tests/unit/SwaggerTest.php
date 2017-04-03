@@ -37,6 +37,9 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @testdox swagger-codegen-cli generate - Generate code with chosen lang
+     */
     public function testSwaggerGenerator()
     {
         $swagger = new Swagger();
@@ -48,5 +51,79 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFileExists('tests/tmp/swagger.io/api-doc/index.html');
         $this->assertEquals(getmyuid(), fileowner('tests/tmp/swagger.io/api-doc/index.html'));
+    }
+
+    /**
+     * @testdox swagger-codegen-cli config-help - Config help for chosen lang
+     */
+    public function testConfigHelp()
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->configHelp('php');
+
+        $this->assertContains('CONFIG OPTIONS', $result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli help - Display help information
+     */
+    public function testHelp()
+    {
+        $swagger = new Swagger();
+
+        $result = implode("\n", $swagger->help());
+
+        $this->assertContains('usage: swagger-codegen-cli', $result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli help <command> - Display help information for a command
+     */
+    public function testHelpWithParam()
+    {
+        $swagger = new Swagger();
+
+        $result = implode("\n", $swagger->help('generate'));
+
+        $this->assertContains('swagger-codegen-cli generate', $result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli langs - Shows available langs
+     */
+    public function testLanguages()
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->languages();
+
+        $this->assertContains('html2', $result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli meta - MetaGenerator
+     */
+    public function testMeta()
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->meta('-o /local/tests/tmp/generated');
+
+        $this->assertFileExists('tests/tmp/generated/pom.xml');
+
+        `rm -rf tests/tmp/generated`;
+    }
+
+    /**
+     * @testdox swagger-codegen-cli version - Show version information
+     */
+    public function testVersion()
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->version();
+
+        $this->assertRegExp('~^\d+\.\d+\.\d+~', $result);
     }
 }

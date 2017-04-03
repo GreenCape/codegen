@@ -23,7 +23,7 @@ class Swagger
      */
     public function configHelp($language)
     {
-        return $this->execute('config-help');
+        return $this->execute('config-help', "-l $language");
     }
 
     /**
@@ -43,7 +43,7 @@ class Swagger
      *
      * @param string $command
      */
-    public function help($command)
+    public function help($command = '')
     {
         return $this->execute('help', $command);
     }
@@ -53,7 +53,10 @@ class Swagger
      */
     public function languages()
     {
-        return $this->execute('langs');
+        $languages = preg_replace('~^Available languages: \[(.*)\]$~', '\\1', implode("\n", $this->execute('langs')));
+        $languages = preg_split('~,\s*~', $languages);
+
+        return $languages;
     }
 
     /**
@@ -76,7 +79,7 @@ class Swagger
      */
     public function version()
     {
-        return $this->execute('version');
+        return implode("\n", $this->execute('version'));
     }
 
     /**
