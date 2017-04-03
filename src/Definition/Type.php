@@ -29,11 +29,13 @@ class Type
 
     /**
      * @param $config
+     * @return mixed
      */
     private function init($config)
     {
         if (is_string($config)) {
             $this->init($this->resolve($config));
+            return;
         }
 
         $this->len = $config['len'] ?? 255;
@@ -47,7 +49,7 @@ class Type
                 break;
 
             case 'richtext':
-                $this->type  = 'string';
+                $this->type = 'string';
                 $this->input = 'editor';
                 $this->mysql = 'MEDIUMTEXT';
                 $this->php = $this->type;
