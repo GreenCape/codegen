@@ -73,9 +73,41 @@ definitions:
     properties:
 {% for property in entity.properties %}
       {{ property.name }}:
-        type: {{ property.type }}
 {% if property.type == 'integer' %}
+        type: integer
         format: int32
+{% elseif property.type == 'long' %}
+        type: integer
+        format: int64
+{% elseif property.type == 'float' %}
+        type: number
+        format: float
+{% elseif property.type == 'double' %}
+        type: number
+        format: double
+{% elseif property.type == 'byte' %}
+        type: string
+        format: byte
+{% elseif property.type == 'binary' %}
+        type: string
+        format: binary
+{% elseif property.type == 'date' %}
+        type: string
+        format: date
+{% elseif property.type == 'datetime' %}
+        type: string
+        format: date-time
+{% elseif property.type == 'password' %}
+        type: string
+        format: password
+{% elseif property.type == 'csv' %}
+        type: string
+{% elseif property.type == 'json' %}
+        type: string
+{% elseif property.type == 'richtext' %}
+        type: string
+{% else %}
+        type: {{ property.type }}
 {% endif %}
 {% if property.description %}
         description: {{ property.description }}

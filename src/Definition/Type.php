@@ -49,7 +49,7 @@ class Type
                 break;
 
             case 'richtext':
-                $this->type = 'string';
+                $this->type  = 'string';
                 $this->input = 'editor';
                 $this->mysql = 'MEDIUMTEXT';
                 $this->php = $this->type;
