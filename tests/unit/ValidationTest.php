@@ -9,16 +9,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     public function validationData()
     {
         return [
-            'string without value' => [
-                ['positive', null],
-                ['rule' => 'positive', 'value' => null],
+            'string' => [
+                'positive',
+                ['rule' => 'positive', 'value' => true],
             ],
-            'string with value' => [
-                ['length', 64],
+            'key => value' => [
+                ['length' => 64],
                 ['rule' => 'length', 'value' => 64],
             ],
-            'array' => [
-                [['rule' => 'length', 'value' => 64], null],
+            'rule/value' => [
+                ['rule' => 'length', 'value' => 64],
                 ['rule' => 'length', 'value' => 64],
             ],
         ];
@@ -29,9 +29,9 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
      *
      * @testdox
      */
-    public function testValidation($args, $expected)
+    public function testValidation($arg, $expected)
     {
-        $validation = new Validation($args[0], $args[1]);
+        $validation = new Validation($arg);
 
         $this->assertEquals($expected['rule'], $validation->getRule());
         $this->assertEquals($expected['value'], $validation->getValue());

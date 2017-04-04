@@ -108,7 +108,7 @@ class Property
     /**
      * @var Validation[]
      */
-    private $validation;
+    private $validation = [];
 
     /**
      * @var string
@@ -144,6 +144,10 @@ class Property
 
         foreach ($property['options'] ?? [] as $option) {
             $this->addOption(new Option($option));
+        }
+
+        foreach ($this->type->get('validation') as $rule => $value) {
+            $this->addValidation(new Validation([$rule => $value]));
         }
 
         foreach ($property['validation'] ?? [] as $validation) {

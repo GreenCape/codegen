@@ -11,5 +11,12 @@
         {{ comma }} "{{ option.key }}": "{{ option.value }}"
 {% set comma = ',' %}
 {% endfor %}
+    },
+    "validation": {
+{% set comma = '' %}
+{% for rule in property.validation %}
+        {{ comma }} "{{ rule.rule }}": "{{ rule.value }}"
+{% set comma = ',' %}
+{% endfor %}
     }
 }

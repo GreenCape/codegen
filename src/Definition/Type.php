@@ -11,6 +11,7 @@ class Type
     private $input = '';
     private $role  = '';
     private $index = '';
+    private $validation = [];
 
     /**
      * Allow read access to non-public members
@@ -60,6 +61,7 @@ class Type
                 $this->input = 'none';
                 $this->role  = $config['role'] ?? 'key';
                 $this->index = $config['index'] ?? 'unique';
+                $this->validation['positive'] = true;
                 break;
 
             case 'integer':

@@ -10,47 +10,47 @@ class TypeTest extends \PHPUnit\Framework\TestCase
     public function typeData()
     {
         return [
-            'string-integer'  => [
+            'string-integer' => [
                 'integer',
                 ['type' => 'integer'],
             ],
-            'array-integer'   => [
+            'array-integer' => [
                 ['type' => 'integer'],
                 ['type' => 'integer'],
             ],
-            'string-string'   => [
+            'string-string' => [
                 'string',
                 ['type' => 'string'],
             ],
-            'array-string'    => [
+            'array-string' => [
                 ['type' => 'string'],
                 ['type' => 'string'],
             ],
             'string-password' => [
                 'password',
                 [
-                    'type'  => 'string',
+                    'type' => 'string',
                     'input' => 'password',
                 ],
             ],
-            'array-password'  => [
+            'array-password' => [
                 ['type' => 'password'],
                 [
-                    'type'  => 'string',
+                    'type' => 'string',
                     'input' => 'password',
                 ],
             ],
             'string-richtext' => [
                 'richtext',
                 [
-                    'type'  => 'string',
+                    'type' => 'string',
                     'input' => 'editor',
                 ],
             ],
-            'array-richtext'  => [
+            'array-richtext' => [
                 ['type' => 'richtext'],
                 [
-                    'type'  => 'string',
+                    'type' => 'string',
                     'input' => 'editor',
                 ],
             ],
@@ -63,7 +63,7 @@ class TypeTest extends \PHPUnit\Framework\TestCase
      * @testdox
      *
      * @param string|array $config
-     * @param array        $expected
+     * @param array $expected
      */
     public function testType($config, $expected)
     {
@@ -77,8 +77,8 @@ class TypeTest extends \PHPUnit\Framework\TestCase
     public function testSelectOptionsAsStrings()
     {
         $property = new Property([
-            'name'    => 'test_property',
-            'type'    => 'select',
+            'name' => 'test_property',
+            'type' => 'select',
             'options' => [
                 'foo',
                 'bar',
@@ -100,15 +100,15 @@ class TypeTest extends \PHPUnit\Framework\TestCase
     public function testSelectOptionsAsArray()
     {
         $property = new Property([
-            'name'    => 'test_property',
-            'type'    => 'select',
+            'name' => 'test_property',
+            'type' => 'select',
             'options' => [
                 [
-                    'key'   => 'one',
+                    'key' => 'one',
                     'value' => 'foo',
                 ],
                 [
-                    'key'   => 'two',
+                    'key' => 'two',
                     'value' => 'bar',
                 ],
             ],
@@ -132,121 +132,133 @@ class TypeTest extends \PHPUnit\Framework\TestCase
             [
                 'boolean',
                 [
-                    'type'  => 'boolean',
-                    'len'   => 1,
+                    'type' => 'boolean',
+                    'len' => 1,
                     'input' => 'yesno',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'csv',
                 [
-                    'type'  => 'string',
-                    'len'   => 255,
+                    'type' => 'string',
+                    'len' => 255,
                     'input' => 'text',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'date',
                 [
-                    'type'  => 'date',
-                    'len'   => 10,
+                    'type' => 'date',
+                    'len' => 10,
                     'input' => 'calendar',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'id',
                 [
-                    'type'  => 'integer',
-                    'len'   => 10,
+                    'type' => 'integer',
+                    'len' => 10,
                     'input' => 'none',
-                    'role'  => 'key',
+                    'role' => 'key',
                     'index' => 'unique',
+                    'validation' => ['positive' => 1],
                 ],
             ],
             [
                 'integer',
                 [
-                    'type'  => 'integer',
-                    'len'   => 10,
+                    'type' => 'integer',
+                    'len' => 10,
                     'input' => 'number',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'json',
                 [
-                    'type'  => 'string',
-                    'len'   => 255,
+                    'type' => 'string',
+                    'len' => 255,
                     'input' => 'text',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'password',
                 [
-                    'type'  => 'string',
-                    'len'   => 64,
+                    'type' => 'string',
+                    'len' => 64,
                     'input' => 'password',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'richtext',
                 [
-                    'type'  => 'string',
-                    'len'   => 4096,
+                    'type' => 'string',
+                    'len' => 4096,
                     'input' => 'editor',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'select',
                 [
-                    'type'  => 'string',
-                    'len'   => 64,
+                    'type' => 'string',
+                    'len' => 64,
                     'input' => 'select',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'string',
                 [
-                    'type'  => 'string',
-                    'len'   => 255,
+                    'type' => 'string',
+                    'len' => 255,
                     'input' => 'text',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
             [
                 'title',
                 [
-                    'type'  => 'string',
-                    'len'   => 64,
+                    'type' => 'string',
+                    'len' => 64,
                     'input' => 'text',
-                    'role'  => 'title',
+                    'role' => 'title',
                     'index' => 'unique',
+                    'validation' => [],
                 ],
             ],
             [
                 'default',
                 [
-                    'type'  => 'default',
-                    'len'   => 0,
+                    'type' => 'default',
+                    'len' => 0,
                     'input' => '',
-                    'role'  => '',
+                    'role' => '',
                     'index' => '',
+                    'validation' => [],
                 ],
             ],
         ];
@@ -271,5 +283,6 @@ class TypeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected['role'], $result['role']);
         $this->assertEquals($expected['index'], $result['index']);
         $this->assertEquals($expected['input'], $result['input']);
+        $this->assertEquals($expected['validation'], $result['validation']);
     }
 }
