@@ -7,21 +7,22 @@ namespace GreenCape\CodeGen\Definition;
  *
  * @package GreenCape\CodeGen
  *
- * @property $name
- * @property $type
- * @property $role
- * @property $input
- * @property $label
- * @property $description
- * @property $hint
- * @property $translate
- * @property $search
- * @property $default
- * @property $options
- * @property $position
- * @property $form
- * @property $validation
- * @property $index
+ * @property-read string       $name
+ * @property-read Type         $type
+ * @property-read int          $len
+ * @property-read string       $role
+ * @property-read string       $input
+ * @property-read string       $label
+ * @property-read string       $description
+ * @property-read string       $hint
+ * @property-read string       $translate
+ * @property-read string       $search
+ * @property-read mixed        $default
+ * @property-read Option[]     $options
+ * @property-read int          $position
+ * @property-read string       $form
+ * @property-read Validation[] $validation
+ * @property-read string       $index
  */
 class Property
 {
@@ -38,6 +39,13 @@ class Property
      * @var Type
      */
     private $type;
+
+    /**
+     * The property length
+     *
+     * @var integer
+     */
+    private $len;
 
     /**
      * Property roles allow to use any property name you want in your entities, and make the generator aware of its
@@ -85,7 +93,7 @@ class Property
     /**
      * @var Option[]
      */
-    private $options;
+    private $options = [];
 
     /**
      * @var int
@@ -121,8 +129,9 @@ class Property
     {
         $this->name        = $property['name'] ?? 'unnamed';
         $this->type        = new Type($property);
-        $this->role        = $property['role'] ?? '';
-        $this->input       = $property['input'] ?? '';
+        $this->len         = $this->type->get('len');
+        $this->role        = $property['role'] ?? $this->type->get('role');
+        $this->input       = $property['input'] ?? $this->type->get('input');
         $this->label       = $property['label'] ?? '';
         $this->description = $property['description'] ?? '';
         $this->hint        = $property['hint'] ?? '';
@@ -131,7 +140,7 @@ class Property
         $this->default     = $property['default'] ?? '';
         $this->position    = intval($property['position'] ?? 0);
         $this->form        = $property['form'] ?? 'record';
-        $this->index       = $property['index'] ?? '';
+        $this->index       = $property['index'] ?? $this->type->get('index');
 
         foreach ($property['options'] ?? [] as $option) {
             $this->addOption(new Option($option));
@@ -166,6 +175,14 @@ class Property
     public function getType($index = 'type'): string
     {
         return $this->type->get($index);
+    }
+
+    /**
+     * @return int
+     */
+    public function getLen(): int
+    {
+        return $this->len;
     }
 
     /**

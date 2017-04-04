@@ -1,6 +1,10 @@
 {
     "name": "{{ property.name }}",
     "type": "{{ property.type }}",
+    "input": "{{ property.input }}",
+    "len": "{{ property.len }}",
+    "role": "{{ property.role }}",
+    "index": "{{ property.index }}",
     "options": {
 {% set comma = '' %}
 {% for option in property.options %}

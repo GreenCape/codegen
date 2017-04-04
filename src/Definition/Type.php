@@ -8,14 +8,16 @@ class Type
     private $sign;
     private $len;
     private $null;
-    private $input;
+    private $input = '';
+    private $role  = '';
+    private $index = '';
 
     /**
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
 
-    public function __construct(&$config)
+    public function __construct($config)
     {
         $this->init($config);
     }
@@ -25,7 +27,7 @@ class Type
      *
      * @return mixed
      */
-    private function init(&$config)
+    private function init($config)
     {
         if (is_string($config)) {
             $this->init($this->resolve($config));
@@ -48,16 +50,16 @@ class Type
 
             case 'date':
                 $this->type  = 'date';
-                $this->len   = $config['len'] ?? 255;
+                $this->len   = $config['len'] ?? 10;
                 $this->input = 'calendar';
                 break;
 
             case 'id':
-                $this->type      = 'integer';
-                $this->len       = 10;
-                $this->input     = 'none';
-                $config['role']  = $config['role'] ?? 'key';
-                $config['index'] = $config['index'] ?? 'unique';
+                $this->type  = 'integer';
+                $this->len   = 10;
+                $this->input = 'none';
+                $this->role  = $config['role'] ?? 'key';
+                $this->index = $config['index'] ?? 'unique';
                 break;
 
             case 'integer':
@@ -97,24 +99,22 @@ class Type
                 break;
 
             case 'title':
-                $this->type      = 'string';
-                $this->len       = 64;
-                $this->input     = 'text';
-                $config['role']  = $config['role'] ?? 'title';
-                $config['index'] = $config['index'] ?? 'unique';
+                $this->type  = 'string';
+                $this->len   = 64;
+                $this->input = 'text';
+                $this->role  = $config['role'] ?? 'title';
+                $this->index = $config['index'] ?? 'unique';
                 break;
 
             default:
                 $this->type  = $config['type'] ?? 'string';
-                $this->mysql = $this->type;
-                $this->php   = $this->type;
+                $this->len   = $config['len'] ?? 0;
+                $this->input = $config['input'] ?? '';
                 break;
         }
 
-        $this->sign  = $config['sign'] ?? '';
-        $this->null  = $config['null'] ?? 'true';
-        $this->input = $config['input'] = $config['input'] ?? $this->input;
-        $this->len   = $config['len'] = $config['len'] ?? $this->len;
+        $this->sign = $config['sign'] ?? '';
+        $this->null = $config['null'] ?? 'true';
     }
 
     private function resolve($config)
