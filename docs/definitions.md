@@ -111,7 +111,7 @@ The information is defined in a JSON file, usually `project.json`.
 
 + `storage`
 
-    Information about the storage. Currently only the `type` 'default' is supported, requiring the declaration of a `table` name. 
+    Information about the storage. 
 
 + `dynKey`
 
@@ -133,6 +133,16 @@ The information is defined in a JSON file, usually `project.json`.
 
     A list of the entity's relations. See below for details.
 
+### Storage Definition
+
++ `default`
+
+    Requires the declaration of a `table` name.
+ 
++ `filesystem`
+
+    Requires the declaration of a `path` containing all properties.
+
 ## Property Definition
 
 ```json
@@ -140,7 +150,7 @@ The information is defined in a JSON file, usually `project.json`.
     {
       "name": "id", # <field>
       "type": {
-        "base": "integer",
+        "type": "integer",
         "sign": "unsigned",
         "len": 10,
         "null": false
@@ -186,7 +196,7 @@ The information is defined in a JSON file, usually `project.json`.
     {
       "name": "category",
       "type": {
-        "base": "reference",      
+        "type": "reference",      
         "table": "categories", # <ref>
         "entity": "Category",
         "key": "id", # <refid>
@@ -219,24 +229,24 @@ The information is defined in a JSON file, usually `project.json`.
 + `name`
 + `type`
 
-    - enum
+    - see [Types](types.md)
 
     Additionally, templates can pre-define field types by semantic names according to the implementation.
 
     ```json
     "id": {
-      "base": "integer",
+      "type": "integer",
       "sign": "unsigned",
       "len": 10,
       "null": false
     },
     "title": {
-      "base": "string",
+      "type": "string",
       "len": 64,
       "null": false
     },
     "category": {
-      "base": "reference",      
+      "type": "reference",      
       "table": "categories",
       "entity": "Category",
       "key": "id",
