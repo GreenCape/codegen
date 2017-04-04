@@ -8,7 +8,9 @@ The Code Generator supports different data types for properties. Many of them ar
 
 ```json
 {
-  "type": "boolean"
+  "type": "boolean",
+  "len": 1,
+  "input": "yesno"
 }
 ```
 
@@ -81,6 +83,31 @@ Data is stored in a JSON string.
 ```
 
 Usually, the application is supposed to expand the value into an array, a collection, or an object.
+
+## password
+
+**Implicit settings:**
+
+```json
+{
+  "type": "string",
+  "len": 64,
+  "input": "password"
+}
+```
+
+## richtext
+
+
+**Implicit settings:**
+
+```json
+{
+  "type": "string",
+  "len": 4096,
+  "input": "editor"
+}
+```
 
 ## select
 

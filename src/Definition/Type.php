@@ -9,65 +9,123 @@ class Type
     private $len;
     private $null;
     private $input;
-    private $mysql;
-    private $php;
 
     /**
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
 
-    public function __construct($config)
+    public function __construct(&$config)
     {
         $this->init($config);
+    }
+
+    /**
+     * @param $config
+     *
+     * @return mixed
+     */
+    private function init(&$config)
+    {
+        if (is_string($config)) {
+            $this->init($this->resolve($config));
+
+            return;
+        }
+
+        switch ($config['type'] ?? 'string') {
+            case 'boolean':
+                $this->type  = 'boolean';
+                $this->len   = $config['len'] ?? 1;
+                $this->input = 'yesno';
+                break;
+
+            case 'csv':
+                $this->type  = 'string';
+                $this->len   = $config['len'] ?? 255;
+                $this->input = 'text';
+                break;
+
+            case 'date':
+                $this->type  = 'date';
+                $this->len   = $config['len'] ?? 255;
+                $this->input = 'calendar';
+                break;
+
+            case 'id':
+                $this->type      = 'integer';
+                $this->len       = 10;
+                $this->input     = 'none';
+                $config['role']  = $config['role'] ?? 'key';
+                $config['index'] = $config['index'] ?? 'unique';
+                break;
+
+            case 'integer':
+                $this->type  = 'integer';
+                $this->len   = 10;
+                $this->input = 'number';
+                break;
+
+            case 'json':
+                $this->type  = 'string';
+                $this->len   = 255;
+                $this->input = 'text';
+                break;
+
+            case 'password':
+                $this->type  = 'string';
+                $this->len   = 64;
+                $this->input = 'password';
+                break;
+
+            case 'richtext':
+                $this->type  = 'string';
+                $this->len   = 4096;
+                $this->input = 'editor';
+                break;
+
+            case 'select':
+                $this->type  = 'string';
+                $this->len   = 64;
+                $this->input = 'select';
+                break;
+
+            case 'string':
+                $this->type  = 'string';
+                $this->len   = 255;
+                $this->input = 'text';
+                break;
+
+            case 'title':
+                $this->type      = 'string';
+                $this->len       = 64;
+                $this->input     = 'text';
+                $config['role']  = $config['role'] ?? 'title';
+                $config['index'] = $config['index'] ?? 'unique';
+                break;
+
+            default:
+                $this->type  = $config['type'] ?? 'string';
+                $this->mysql = $this->type;
+                $this->php   = $this->type;
+                break;
+        }
+
+        $this->sign  = $config['sign'] ?? '';
+        $this->null  = $config['null'] ?? 'true';
+        $this->input = $config['input'] = $config['input'] ?? $this->input;
+        $this->len   = $config['len'] = $config['len'] ?? $this->len;
+    }
+
+    private function resolve($config)
+    {
+        return [
+            'type' => $config,
+        ];
     }
 
     public function get($property)
     {
         return $this->{$property};
-    }
-
-    /**
-     * @param $config
-     * @return mixed
-     */
-    private function init($config)
-    {
-        if (is_string($config)) {
-            $this->init($this->resolve($config));
-            return;
-        }
-
-        $this->len = $config['len'] ?? 255;
-
-        switch ($config['type'] ?? 'string') {
-            case 'password':
-                $this->type = 'string';
-                $this->input = 'password';
-                $this->mysql = "VARCHAR({$this->len})";
-                $this->php = $this->type;
-                break;
-
-            case 'richtext':
-                $this->type  = 'string';
-                $this->input = 'editor';
-                $this->mysql = 'MEDIUMTEXT';
-                $this->php = $this->type;
-                break;
-
-            default:
-                $this->type = $config['type'] ?? 'string';
-                $this->mysql = $this->type;
-                $this->php = $this->type;
-                break;
-        }
-
-        $this->sign = $config['sign'] ?? '';
-        $this->null = $config['null'] ?? 'true';
-    }
-
-    private function resolve($config)
-    {
-        return ['type' => $config,];
     }
 }

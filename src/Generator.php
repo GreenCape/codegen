@@ -54,8 +54,7 @@ class Generator
                 foreach ($this->project->entities as $entity) {
                     $this->render($template, $source, $entity);
                 }
-            }
-            else {
+            } else {
                 $this->render($template, $source);
             }
         }
@@ -97,7 +96,10 @@ class Generator
             return;
         }
 
-        $context = ['project' => $this->project, 'entity' => $entity];
+        $context = [
+            'project' => $this->project,
+            'entity'  => $entity,
+        ];
 
         $content = $template->render($context);
 
@@ -117,7 +119,12 @@ class Generator
     private function getDestinationPath($source, Entity $entity = null): string
     {
         $name        = is_null($entity) ? 'entity' : $entity->name;
-        $replace     = [$this->templatePath => $this->outputPath, '$' => $this->inflector->fileName($this->project->name), '#s' => $this->inflector->fileName($this->inflector->plural($name)), '#' => $this->inflector->fileName($name),];
+        $replace     = [
+            $this->templatePath => $this->outputPath,
+            '$'                 => $this->inflector->fileName($this->project->name),
+            '#s'                => $this->inflector->fileName($this->inflector->plural($name)),
+            '#'                 => $this->inflector->fileName($name),
+        ];
         $destination = str_replace(array_keys($replace), array_values($replace), $source);
 
         return $destination;

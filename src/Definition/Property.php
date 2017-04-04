@@ -120,6 +120,7 @@ class Property
     private function init($property)
     {
         $this->name        = $property['name'] ?? 'unnamed';
+        $this->type        = new Type($property);
         $this->role        = $property['role'] ?? '';
         $this->input       = $property['input'] ?? '';
         $this->label       = $property['label'] ?? '';
@@ -131,8 +132,6 @@ class Property
         $this->position    = intval($property['position'] ?? 0);
         $this->form        = $property['form'] ?? 'record';
         $this->index       = $property['index'] ?? '';
-
-        $this->type = new Type($property);
 
         foreach ($property['options'] ?? [] as $option) {
             $this->addOption(new Option($option));
