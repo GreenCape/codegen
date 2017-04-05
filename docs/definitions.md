@@ -149,12 +149,10 @@ The information is defined in a JSON file, usually `project.json`.
   "properties": [
     {
       "name": "id", # <field>
-      "type": {
-        "type": "integer",
-        "sign": "unsigned",
-        "len": 10,
-        "null": false
-      },
+      "type": "integer",
+      "sign": "unsigned",
+      "len": 10,
+      "null": false,
       "role": "key", # <special>
       "input": "none",
       "label": "ID",

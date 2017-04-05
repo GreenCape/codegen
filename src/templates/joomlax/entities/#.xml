@@ -1,0 +1,60 @@
+<?template scope="entity"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE entity SYSTEM
+        "https://github.com/nibralab/joomla-architecture/blob/master/code/Joomla/ORM/Definition/entity.dtd">
+<entity name="{{ project.name | class }}\\Entity\\{{ entity.name | class }}">
+
+    <storage>
+{% if entity.storage.type == 'default' %}
+        <default table="{{ entity.storage.table }}"/>
+{% elseif entity.storage.type == 'filesystem' %}
+        <filesystem pattern="{{ entity.storage.path }}"/>
+{% endif %}
+    </storage>
+
+    <fields>
+{% for property in entity.properties %}
+
+        <field name="{{ property.name }}"
+               type="{{ property.type }}"
+{% if property.label %}
+               label="{{ property.label }}"
+{% endif %}
+{% if property.description %}
+               description="{{ property.description }}"
+{% endif %}
+{% if property.default %}
+               default="{{ property.default }}"
+{% endif %}
+{% if property.options or property.validation %}
+        >
+{% if property.options %}
+            <options>
+{% for option in property.options %}
+                <option key="{{ option.key }}" value="{{ option.value }}"/>
+{% endfor %}
+            </options>
+{% endif %}
+{% for validation in property.validation %}
+            <validation rule="{{ validation.rule }}" value="{{ validation.value }}"/>
+{% endfor %}
+        </field>
+{% else %}
+        />
+{% endif %}
+{% endfor %}
+
+    </fields>
+{% if property.relations %}
+
+    <relations>
+{% for relation in property.relation %}
+        <{{ relation.type }}
+            name="{{ relation.name }}"
+            entity="{{ relation.entity }}"
+        />
+{% endfor %}
+    </relations>
+{% endif %}
+
+</entity>
