@@ -5,7 +5,9 @@
 <entity name="{{ project.name | class }}\\Entity\\{{ entity.name | class }}">
 
     <storage>
-{% if entity.storage.type == 'default' %}
+{% if not entity.storage %}
+        <default table="{{ entity.name | plural | table }}"/>
+{% elseif entity.storage.type == 'default' %}
         <default table="{{ entity.storage.table }}"/>
 {% elseif entity.storage.type == 'filesystem' %}
         <filesystem pattern="{{ entity.storage.path }}"/>
@@ -45,15 +47,51 @@
 {% endfor %}
 
     </fields>
-{% if property.relations %}
+{% if entity.relations %}
 
     <relations>
-{% for relation in property.relation %}
-        <{{ relation.type }}
-            name="{{ relation.name }}"
-            entity="{{ relation.entity }}"
+{% for relation in entity.relations %}
+
+{% if relation.type == 'belongsTo' %}
+        <belongsTo
+            name="{{ relation.name }}{# name: name of the virtual property containing the resolved entity #}"
+            property="{{ relation.property.name }}{# property: name of the property in the current entity containing the foreign key #}"
+            entity="{{ relation.entity.name }}{# entity: related entity #}"
+            reference="{{ relation.reference.name }}{# reference: name of the identifying property in the related entity #}"
         />
+{% elseif relation.type == 'hasOne' %}
+        <hasOne
+            name="{{ relation.name }}{# name: name of the virtual property containing the resolved entity #}"
+            property="{{ relation.property.name }}{# property: name of the property in the current entity referenced by the related entity #}"
+            entity="{{ relation.entity.name }}{# entity: related entity #}"
+            reference="{{ relation.reference.name }}{# reference: name of the property in the related entity containing the foreign key #}"
+        />
+{% elseif relation.type == 'hasMany' %}
+        <hasMany
+            name="{{ relation.name }}{# name: name of the virtual property containing the resolved entities #}"
+            property="{{ relation.property.name }}{# property: name of the property in the current entity referenced by the related entities #}"
+            entity="{{ relation.entity.name }}{# entity: related entity #}"
+            reference="{{ relation.reference.name }}{# reference: name of the property in the related entity containing the foreign key #}"
+        />
+{% elseif relation.type == 'hasManyThru' %}
+{% if relation.map %}
+        <hasManyThru
+            name="{{ relation.name }}{# name: name of the virtual property containing the resolved entities #}"
+            map="{{ relation.map.name }}{# map: name of the mapping entity #}"
+            reference="{{ relation.reference.name }}{# reference: name of the property in the related entity containing the foreign key #}"
+            entity="{{ relation.entity.name }}{# entity: related entity #}"
+        />
+{% else %}
+        <hasManyThru
+            name="{{ relation.name }}{# name: name of the virtual property containing the resolved entities #}"
+            property="{{ relation.property.name }}{# property: name of the property in the current entity containing the foreign keys #}"
+            reference="{{ relation.reference.name }}{# reference: name of the identifying property in the related entity #}"
+            entity="{{ relation.entity.name }}{# entity: related entity #}"
+        />
+{% endif %}
+{% endif %}
 {% endfor %}
+
     </relations>
 {% endif %}
 

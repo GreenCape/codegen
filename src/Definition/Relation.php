@@ -6,12 +6,12 @@ namespace GreenCape\CodeGen\Definition;
  * Class Relation
  *
  * @package GreenCape\CodeGen
- * @property $name
- * @property $type
- * @property $property
- * @property $entity
- * @property $reference
- * @property $map
+ * @property-read string   $name
+ * @property-read string   $type
+ * @property-read Property $property
+ * @property-read Entity   $entity
+ * @property-read Property $reference
+ * @property-read Entity   $map
  */
 class Relation
 {
@@ -91,6 +91,8 @@ class Relation
 
         if (empty($properties['property'])) {
             $this->property = $current->getSpecial()['key'];
+        } elseif (is_string($properties['property'])) {
+            $this->property = $current->getProperties()[$properties['property']];
         } else {
             $this->property = $properties['property'];
         }
@@ -99,7 +101,7 @@ class Relation
          * Preset with placeholders, because it could be an external entity. Since the entity is created without the
          * registry, it will be overwritten, if a definition for the entity is encountered.
          */
-        $this->entity = new Entity(['name' => $properties['entity']]);
+        $this->entity    = new Entity(['name' => $properties['entity']]);
         $this->reference = new Property(['name' => $properties['reference'] ?? 'id']);
 
         $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties, $current) {

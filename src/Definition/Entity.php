@@ -78,6 +78,7 @@ class Entity
      * @var Property[]
      */
     private $properties = [];
+
     /**
      * Properties may have a special meaning, expressed by their role. All properties with a role are collected in
      * special, so it is possible to access the properties by role.
@@ -85,24 +86,34 @@ class Entity
      * @var Property[]
      */
     private $special = [];
+
     /**
      * Ordered list of properties to be displayed in list (table) views.
      *
      * @var Property[]
      */
     private $listFields = [];
+
     /**
      * List of foreign keys pointing to this entity.
      *
      * @var array
      */
     private $details = [];
+
     /**
      * List of foreign keys in this entity.
      *
-     * @var Property[]
+     * @var Property[][]
      */
     private $references = [];
+
+    /**
+     * List of known relations for this entity.
+     *
+     * @var Relation[]
+     */
+    private $relations = [];
 
     /**
      * The entity registry
@@ -190,6 +201,8 @@ class Entity
      */
     public function addRelation(Relation $relation, string $entityName)
     {
+        $this->relations[$relation->getName()] = $relation;
+
         switch ($relation->getType()) {
 
             case 'belongsTo':
@@ -199,7 +212,9 @@ class Entity
 
             case 'hasMany':
             case 'hasOne':
-                $this->details[] = ['entity' => $relation->getEntity(), 'reference' => $relation->getReference()];
+                $this->details[] = ['entity'    => $relation->getEntity(),
+                                    'reference' => $relation->getReference(),
+                ];
                 break;
 
             case 'hasManyThru':
@@ -255,11 +270,19 @@ class Entity
     }
 
     /**
-     * @return Property[]
+     * @return Property[][]
      */
     public function getReferences(): array
     {
         return $this->references;
+    }
+
+    /**
+     * @return Relation[]
+     */
+    public function getRelations(): array
+    {
+        return $this->relations;
     }
 
     /**

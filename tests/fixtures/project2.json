@@ -171,7 +171,7 @@
       ],
       "relations": [
         {
-          "name": "Article",
+          "name": "article",
           "type": "hasManyThru",
           "entity": "Article",
           "map": "ArticleTagMap"
@@ -197,14 +197,14 @@
       ],
       "relations": [
         {
-          "name": "Article",
+          "name": "article",
           "type": "belongsTo",
           "property": "article_id",
           "entity": "Article",
           "reference": "id"
         },
         {
-          "name": "Tag",
+          "name": "tag",
           "type": "belongsTo",
           "property": "tag_id",
           "entity": "Tag",
