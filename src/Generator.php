@@ -10,6 +10,7 @@ class Generator
     private $project;
     private $templatePath;
     private $outputPath;
+    private $filenameFilter = 'file';
 
     /** @var  Inflector */
     private $inflector;
@@ -17,6 +18,13 @@ class Generator
     public function project(Project $project): Generator
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function filenameFilter(string $filter): Generator
+    {
+        $this->filenameFilter = $filter;
 
         return $this;
     }
@@ -121,9 +129,9 @@ class Generator
         $name        = is_null($entity) ? 'entity' : $entity->name;
         $replace     = [
             $this->templatePath => $this->outputPath,
-            '$'                 => $this->inflector->fileName($this->project->name),
-            '#s'                => $this->inflector->fileName($this->inflector->plural($name)),
-            '#'                 => $this->inflector->fileName($name),
+            '$'                 => $this->inflector->apply($this->filenameFilter, $this->project->name),
+            '#s'                => $this->inflector->apply($this->filenameFilter, $this->inflector->plural($name)),
+            '#'                 => $this->inflector->apply($this->filenameFilter, $name),
         ];
         $destination = str_replace(array_keys($replace), array_values($replace), $source);
 

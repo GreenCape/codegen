@@ -38,11 +38,12 @@ class JoomlaXTest extends \PHPUnit\Framework\TestCase
 
         (new \GreenCape\CodeGen\Generator())
             ->project($project)
+            ->filenameFilter('class')
             ->template($this->templateDir)
             ->output($this->outputDir)
             ->generate();
 
-        $this->assertFileExists($this->outputDir . '/entities/article.xml');
+        $this->assertFileExists($this->outputDir . '/entities/Article.xml');
     }
 
     /**

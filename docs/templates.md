@@ -5,12 +5,22 @@ The templates for the generator use the Twig syntax. Actually, the final files a
 ## File Names
 
 The generator is provided with the name of a directory containing all application files. The file names of the templates are used for the generated files. Some special characters allow interpolation of file (and directory) names.
-  
+
+The table shows replacement examples for a project 'My Project' and an entity 'Person' with the default rule `Generator::filenameFilter('file'))`.
+
 Character | Replacement    | Example
 ----------+----------------+--------
-`$`       | `project.name` | Project's name is 'My Project': `$.css` => `my_project.css`
-`#`       | `entity.name`  | Entity's name is 'Person': `#_model.php` => `person_model.php`
-`#s`      | `entity.name | plural` | Entity's name is 'Person': `#s_view.php` => `people_view.php`
+`$`       | `project.name` | `$.css` => `my_project.css`
+`#`       | `entity.name`  | `#_model.php` => `person_model.php`
+`#s`      | `entity.name | plural` | `#s_view.php` => `people_view.php`
+
+As some projects use the CamalCase notation, the Generator additionally supports the 'class' filter: `Generator::filenameFilter('class'))`.
+ 
+Character | Replacement    | Example
+----------+----------------+--------
+`$`       | `project.name` | `$.css` => `MyProject.css`
+`#`       | `entity.name`  | `#Model.php` => `PersonModel.php`
+`#s`      | `entity.name | plural` | `#sView.php` => `PeopleView.php`
 
 ## Scopes
 
