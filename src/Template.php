@@ -49,7 +49,18 @@ class Template
             return $this->template;
         }
 
-        $filters = ['singular', 'plural', 'title', 'variable', 'class', 'table', 'dash', 'file', 'constant',];
+        $filters = [
+            'singular',
+            'plural',
+            'title',
+            'variable',
+            'class',
+            'table',
+            'dash',
+            'file',
+            'constant',
+            'namespace',
+        ];
         $twig    = new \Twig_Environment(new \Twig_Loader_Array([$this->templateFile => $this->template]));
         foreach ($filters as $filter) {
             $this->addFilter($twig, $filter);

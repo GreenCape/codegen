@@ -6,14 +6,20 @@ class Inflector extends \Doctrine\Common\Inflector\Inflector
 {
     public function apply($filter, $string)
     {
-        if ($filter == 'class') {
-            $filter = 'className';
-        }
-        elseif ($filter == 'file') {
-            $filter = 'fileName';
+        $map = [
+            'class'     => 'className',
+            'file'      => 'fileName',
+            'namespace' => 'namespaceName',
+        ];
+
+        if (isset($map[$filter])) {
+            $filter = $map[$filter];
         }
 
-        return call_user_func([$this, $filter], $string);
+        return call_user_func([
+            $this,
+            $filter,
+        ], $string);
     }
 
     public function variable($string)
@@ -26,6 +32,11 @@ class Inflector extends \Doctrine\Common\Inflector\Inflector
         return str_replace(' ', '', $this->title($string));
     }
 
+    public function namespaceName($string)
+    {
+        return str_replace(' ', '\\', $this->title($string));
+    }
+
     public function title($string)
     {
         return ucwords($this->split($string));
@@ -34,7 +45,7 @@ class Inflector extends \Doctrine\Common\Inflector\Inflector
     protected function split($string)
     {
         $string = implode(' ', preg_split('/(?<=[^A-Z_])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][^A-Z_])/x', $string));
-        $string = preg_replace('/[\s_-]+/', ' ', $string);
+        $string = preg_replace('/[\W\s_]+/', ' ', $string);
 
         return $string;
     }

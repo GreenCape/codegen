@@ -16,7 +16,7 @@
 {# endalign #}
  */
 
-namespace {{ project.name | class }}\Entity;
+namespace {{ project.name | namespace }}\Entity;
 
 /**
  * {{ project.title }} {{ entity.name | title }} Data Transfer Object

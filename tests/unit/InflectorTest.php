@@ -9,7 +9,15 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
     /** @var  Inflector */
     private $inflector;
 
-    private $testData = ['title' => 'Test Data', 'variable' => 'testData', 'class' => 'TestData', 'table' => 'test_data', 'dash' => 'test-data', 'constant' => 'TEST_DATA',];
+    private $testData = [
+        'title'     => 'Test Data',
+        'variable'  => 'testData',
+        'class'     => 'TestData',
+        'table'     => 'test_data',
+        'dash'      => 'test-data',
+        'constant'  => 'TEST_DATA',
+        'namespace' => 'Test\\Data',
+    ];
 
     public function setUp()
     {
@@ -20,7 +28,10 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
     {
         $cases = [];
         foreach ($this->testData as $key => $value) {
-            $cases[$key] = [$key, $value];
+            $cases[$key] = [
+                $key,
+                $value,
+            ];
         }
 
         return $cases;
@@ -81,9 +92,33 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['dash']));
     }
 
+    /**
+     * @dataProvider inflectionData
+     *
+     * @param $filter
+     * @param $expected
+     */
+    public function testConvertFromNamespaceTo($filter, $expected)
+    {
+        $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['namespace']));
+    }
+
     public function numerationData()
     {
-        return [['person', 'people'], ['test', 'tests'], ['entity', 'entities'],];
+        return [
+            [
+                'person',
+                'people',
+            ],
+            [
+                'test',
+                'tests',
+            ],
+            [
+                'entity',
+                'entities',
+            ],
+        ];
     }
 
     /**
