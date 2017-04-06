@@ -163,9 +163,9 @@ class Relation
     }
 
     /**
-     * @return Entity
+     * @return Entity|null
      */
-    public function getMap(): Entity
+    public function getMap()
     {
         return $this->map;
     }
