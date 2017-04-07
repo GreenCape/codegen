@@ -30,7 +30,13 @@ namespace {{ project.name | namespace }}\Entity;
 class {{ entity.name | class }}
 {
 {% for property in entity.properties %}
-    /** @var  {{ property.type }}  {{ property.description }} */
+    /**
+{% if property.description %}
+     * {{ property.description }}
+     *
+{% endif %}
+     * @var  {{ property.type }}
+     */
     public ${{ property.name | variable }};
 
 {% endfor %}
