@@ -17,7 +17,7 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     {
         $basePath = dirname(__DIR__);
 
-        $this->projectFile = $basePath . '/fixtures/project2.json';
+        $this->projectFile = $basePath . '/fixtures/all_relations_project.json';
         $this->templateDir = dirname($basePath) . '/src/templates/swagger.io';
         $this->outputDir   = $basePath . '/tmp/swagger.io';
     }

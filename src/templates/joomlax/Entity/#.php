@@ -37,7 +37,29 @@ class {{ entity.name | class }}
 {% endif %}
      * @var  {{ property.type }}
      */
-    public ${{ property.name | variable }};
+    protected ${{ property.name | variable }};
+
+{% endfor %}
+{% for property in entity.properties %}
+    /**
+     * Gets the {{ property.name | title }}.
+     *
+     * @return  {{ property.type }}
+     */
+    public function get{{ property.name | class }}()
+    {
+        return $this->{{ property.name | variable }};
+    }
+
+    /**
+     * Sets the {{ property.name | title }}.
+     *
+     * @param  {{ property.type }} ${{ property.name | variable }}
+     */
+    public function set{{ property.name | class }}(${{ property.name | variable }})
+    {
+        $this->{{ property.name | variable }} = ${{ property.name | variable }};
+    }
 
 {% endfor %}
 }

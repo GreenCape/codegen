@@ -1,6 +1,7 @@
 {
   "name": "all_relations_project",
   "title": "Test Project with Relations",
+  "repository": "nibralab/all_relations_project",
   "version": "1.0.0",
   "build": "1",
   "description": "A minimal test project containing all types of relations",

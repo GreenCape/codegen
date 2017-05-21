@@ -145,7 +145,7 @@ class {{ project.name | class }}AdminController{{ entity.name | plural | class }
 	 * @return  void
 {# endalign #}
    */
-	function featured()
+	public function featured()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -187,7 +187,7 @@ class {{ project.name | class }}AdminController{{ entity.name | plural | class }
 {# override stick #}
 
 	/**
-	 * Toggle the featured setting of a list of {{ entity.name | plural | title }}.
+	 * Toggle the sticky setting of a list of {{ entity.name | plural | title }}.
 	 *
 {# align("\t", '  ') #}
 	 * @return  void

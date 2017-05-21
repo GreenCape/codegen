@@ -11,6 +11,7 @@ use GreenCape\CodeGen\Inflector;
  *
  * @property $name
  * @property $title
+ * @property $repository
  * @property $version
  * @property $build
  * @property $description
@@ -37,6 +38,13 @@ class Project
      * @var string
      */
     private $title = '';
+
+    /**
+     * The name of the GitHub repository, like owner/project
+     *
+     * @var string
+     */
+    private $repository = '';
 
     /**
      * Optional. The version number for the project.
@@ -146,6 +154,7 @@ class Project
             }
         }
 
+        $this->repository  = $properties['repository'] ?? "undefined/$this->name";
         $this->version     = $properties['version'] ?? '0.0.0';
         $this->build       = $properties['build'] ?? 0;
         $this->description = $properties['description'] ?? '';
@@ -184,6 +193,14 @@ class Project
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepository(): string
+    {
+        return $this->repository;
     }
 
     /**
