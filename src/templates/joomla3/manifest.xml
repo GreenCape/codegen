@@ -1,0 +1,19 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="utf-8"?>
+<updates>
+	<update>
+		<name>{{ project.name | title }}</name>
+		<description>{{ project.description }}</description>
+		<element>pkg_{{ project.name | file }}</element>
+		<type>{{ project.type }}</type>
+		<version>{{ project.version }}</version>
+		<client>site</client>
+		<infourl title="{{ project.name | title }}">https://github.com/{{ project.repository }}/releases/tag/{{ project.version }}</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/{{ project.repository }}/releases/download/{{
+				project.version }}/pkg_{{
+				project.name | file }}-{{ project.version }}.zip</downloadurl>
+		</downloads>
+		<targetplatform name="joomla" version="3.[6789]" />
+	</update>
+</updates>

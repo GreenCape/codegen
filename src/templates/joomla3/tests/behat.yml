@@ -1,0 +1,8 @@
+default:
+    suites:
+        web_features:
+            paths:    [ acceptance/features/web ]
+            contexts: [ WebContext ]
+        api_features:
+            paths:    [ acceptance/features/api ]
+            contexts: [ ApiContext ]

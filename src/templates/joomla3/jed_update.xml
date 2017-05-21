@@ -1,0 +1,15 @@
+<?template scope="application"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<jedupdate version="1">
+	<core_body>{{ project.description }}</core_body>
+	<homepage_link>https://github.com/{{ project.repository }}</homepage_link>
+	<download_link>https://github.com/{{ project.repository }}/releases</download_link>
+	<documentation_link></documentation_link>
+	<support_link></support_link>
+	<license_link></license_link>
+	<version>{{ project.version }}</version>
+	<compatibility>
+		<version>36</version>
+		<version>37</version>
+	</compatibility>
+</jedupdate>
