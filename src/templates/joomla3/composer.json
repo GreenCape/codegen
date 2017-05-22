@@ -20,7 +20,7 @@
     "scripts": {
         "acceptance-tests": [
             "echo \"TODO: Fire up the virtual network\"",
-            "behat --config tests/behat.yml"
+            "behat --colors --config tests/behat.yml"
         ],
         "test": [
             "@acceptance-tests"

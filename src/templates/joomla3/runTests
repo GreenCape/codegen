@@ -1,0 +1,17 @@
+#!/usr/bin/php
+<?php
+use Joomla\Virtualisation\DockerComposeGenerator;
+
+require 'vendor/autoload.php';
+
+$generator = new DockerComposeGenerator('tests/servers');
+$info = $generator->write('build/dockyard/docker-compose.yml');
+
+foreach ($info as $instance)
+{
+	$volume = str_replace(__DIR__ . '/', '', $instance['volume']);
+
+	echo "\n{$instance['name']}:\n";
+    echo " - domain: {$instance['url']}:\n";
+	echo " - files:  {$volume}:\n";
+}
