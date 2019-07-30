@@ -2,6 +2,9 @@
 
 namespace GreenCape\CodeGen\Definition;
 
+use Exception;
+use RuntimeException;
+
 /**
  * Class Entity
  *
@@ -132,6 +135,8 @@ class Entity
      *
      * @param array    $config The entity settings
      * @param Registry $registry
+     *
+     * @throws Exception
      */
     public function __construct(array $config, Registry $registry = null)
     {
@@ -139,7 +144,12 @@ class Entity
         $this->init($config);
     }
 
-    private function init($properties)
+    /**
+     * @param array $properties
+     *
+     * @throws Exception
+     */
+    private function init(array $properties): void
     {
         $this->name    = $properties['name'] ?? 'unnamed';
         $this->role    = $properties['role'] ?? '';
@@ -178,7 +188,7 @@ class Entity
      *
      * @param Property $property The property
      */
-    public function addProperty(Property $property)
+    public function addProperty(Property $property): void
     {
         $this->properties[$property->getName()] = $property;
 
@@ -197,9 +207,9 @@ class Entity
      * @param Relation $relation
      * @param string   $entityName
      *
-     * @throws \Exception
+     * @throws RuntimeException
      */
-    public function addRelation(Relation $relation, string $entityName)
+    public function addRelation(Relation $relation, string $entityName): void
     {
         $this->relations[$relation->getName()] = $relation;
 
@@ -212,17 +222,18 @@ class Entity
 
             case 'hasMany':
             case 'hasOne':
-                $this->details[] = ['entity'    => $relation->getEntity(),
-                                    'reference' => $relation->getReference(),
+                $this->details[] = [
+                    'entity'    => $relation->getEntity(),
+                    'reference' => $relation->getReference(),
                 ];
                 break;
 
             case 'hasManyThru':
-                #throw new \Exception('Not yet implemented');
+                #throw new RuntimeException('Not yet implemented');
                 break;
 
             default:
-                throw new \Exception("Unknown relation type '{$relation->getType()}'", 1203);
+                throw new RuntimeException("Unknown relation type '{$relation->getType()}'", 1203);
                 break;
         }
     }
@@ -240,7 +251,7 @@ class Entity
      *
      * @param Project $project The project
      */
-    public function setProject(Project $project)
+    public function setProject(Project $project): void
     {
         $this->project = $project;
     }

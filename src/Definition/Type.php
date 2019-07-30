@@ -18,17 +18,20 @@ class Type
      */
     use ReadOnlyGuard;
 
+    /**
+     * Type constructor.
+     *
+     * @param string|array $config
+     */
     public function __construct($config)
     {
         $this->init($config);
     }
 
     /**
-     * @param $config
-     *
-     * @return mixed
+     * @param string|array $config
      */
-    private function init($config)
+    private function init($config): void
     {
         if (is_string($config)) {
             $this->init($this->resolve($config));
@@ -119,13 +122,23 @@ class Type
         $this->null = $config['null'] ?? 'true';
     }
 
-    private function resolve($config)
+    /**
+     * @param $config
+     *
+     * @return array
+     */
+    private function resolve($config): array
     {
         return [
             'type' => $config,
         ];
     }
 
+    /**
+     * @param $property
+     *
+     * @return mixed
+     */
     public function get($property)
     {
         return $this->{$property};

@@ -15,11 +15,17 @@
             "GreenCape\\CodeGen\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "GreenCape\\CodeGen\\Tests\\Unit\\Fixture\\": "tests/fixtures"
+        }
+    },
     "require": {
         "twig/twig": "^2.2",
         "doctrine/inflector": "^1.1"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^6.0",
         "symfony/yaml": "^3.2",
         "overtrue/phplint": "^0.2.0"

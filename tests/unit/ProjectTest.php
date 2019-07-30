@@ -2,9 +2,11 @@
 
 namespace GreenCape\CodeGen\Tests\Unit;
 
+use Exception;
 use GreenCape\CodeGen\Definition\Project;
+use PHPUnit\Framework\TestCase;
 
-class ProjectTest extends \PHPUnit\Framework\TestCase
+class ProjectTest extends TestCase
 {
     private $templateDir;
 
@@ -15,18 +17,22 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
         $this->templateDir = $basePath . '/fixtures';
     }
 
-    public function testPropertiesAreReadable()
+    /**
+     * @throws Exception
+     */
+    public function testPropertiesAreReadable(): void
     {
         $project = new Project(json_decode(file_get_contents($this->templateDir . '/project1.json'), true));
 
         $this->assertEquals('test_project', $project->name);
-        $this->assertEquals(1, count($project->authors));
+        $this->assertCount(1, $project->authors);
     }
 
     /**
      * @testdox An exception (9001) is thrown on write attempt to properties
+     * @throws Exception
      */
-    public function testPropertiesAreNotWriteable()
+    public function testPropertiesAreNotWritable(): void
     {
         $this->expectExceptionCode(9001);
 
@@ -36,18 +42,20 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @testdox An exception (1101) is thrown if name and title are missing
+     * @throws Exception
      */
-    public function testMissingNameAndTitle()
+    public function testMissingNameAndTitle(): void
     {
         $this->expectExceptionCode(1101);
 
-        $project       = new Project(json_decode(file_get_contents($this->templateDir . '/project-missing-name-and-title.json'), true));
+        new Project(json_decode(file_get_contents($this->templateDir . '/project-missing-name-and-title.json'), true));
     }
 
     /**
      * @testdox Title is generated from name if missing
+     * @throws Exception
      */
-    public function testMissingTitle()
+    public function testMissingTitle(): void
     {
         $project = new Project(json_decode(file_get_contents($this->templateDir . '/project-missing-title.json'), true));
 
@@ -56,8 +64,9 @@ class ProjectTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @testdox Name is generated from title if missing
+     * @throws Exception
      */
-    public function testMissingName()
+    public function testMissingName(): void
     {
         $project = new Project(json_decode(file_get_contents($this->templateDir . '/project-missing-name.json'), true));
 

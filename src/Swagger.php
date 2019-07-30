@@ -20,10 +20,31 @@ class Swagger
      * Get config help for chosen lang
      *
      * @param string $language The language to get config help for
+     *
+     * @return string
      */
-    public function configHelp($language)
+    public function configHelp(string $language): string
     {
         return $this->execute('config-help', "-l $language");
+    }
+
+    /**
+     * @param string $command
+     * @param string $paramString
+     *
+     * @return string
+     */
+    private function execute(string $command, string $paramString = ''): ?string
+    {
+        $dir     = getcwd();
+        $userId  = getmyuid() . ':' . getmygid();
+        $volume  = "--volume {$dir}:/local";
+        $image   = 'swaggerapi/swagger-codegen-cli';
+        $version = '2.4.7';
+
+        $dockerCommand = "docker run --rm {$volume} --user {$userId} --name temp_swagger {$image}:{$version} {$command} {$paramString}";
+
+        return shell_exec($dockerCommand);
     }
 
     /**
@@ -31,9 +52,10 @@ class Swagger
      *
      * @param string $paramString Complete parameter string
      *
+     * @return string
      * @todo  Make this more dev friendly
      */
-    public function generate($paramString)
+    public function generate(string $paramString): ?string
     {
         return $this->execute('generate', $paramString);
     }
@@ -42,8 +64,10 @@ class Swagger
      * Display help information
      *
      * @param string $command
+     *
+     * @return string
      */
-    public function help($command = '')
+    public function help(string $command = ''): string
     {
         return $this->execute('help', $command);
     }
@@ -53,7 +77,7 @@ class Swagger
      */
     public function languages()
     {
-        $languages = preg_replace('~^Available languages: \[(.*)\]$~', '\\1', implode("\n", $this->execute('langs')));
+        $languages = preg_replace('~^Available languages: \[(.*)\]$~', '\\1', $this->execute('langs'));
         $languages = preg_split('~,\s*~', $languages);
 
         return $languages;
@@ -67,9 +91,10 @@ class Swagger
      *
      * @param string $paramString Complete parameter string
      *
+     * @return string
      * @todo  Make this more dev friendly
      */
-    public function meta($paramString)
+    public function meta(string $paramString): ?string
     {
         return $this->execute('meta', $paramString);
     }
@@ -77,29 +102,8 @@ class Swagger
     /**
      * Show version information
      */
-    public function version()
+    public function version(): string
     {
-        return implode("\n", $this->execute('version'));
-    }
-
-    /**
-     * @param $command
-     * @param $paramString
-     *
-     * @return mixed
-     */
-    private function execute($command, $paramString = '')
-    {
-        $dir    = getcwd();
-        $userId = getmyuid() . ':' . getmygid();
-        $volume = "--volume $dir:/local";
-        $image  = 'swaggerapi/swagger-codegen-cli';
-        $output = [];
-        $return = 0;
-
-        $dockerCommand = "docker run --rm $volume --user $userId --name temp_swagger $image {$command} {$paramString}";
-        exec($dockerCommand, $output, $return);
-
-        return $output;
+        return $this->execute('version');
     }
 }

@@ -120,12 +120,20 @@ class Property
      */
     use ReadOnlyGuard;
 
+    /**
+     * Property constructor.
+     *
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->init($config);
     }
 
-    private function init($property)
+    /**
+     * @param array $property
+     */
+    private function init(array $property): void
     {
         $this->name        = $property['name'] ?? 'unnamed';
         $this->type        = new Type($property);
@@ -138,7 +146,7 @@ class Property
         $this->translate   = $property['translate'] ?? '';
         $this->search      = $property['search'] ?? '';
         $this->default     = $property['default'] ?? '';
-        $this->position    = intval($property['position'] ?? 0);
+        $this->position    = (int) ($property['position'] ?? 0);
         $this->form        = $property['form'] ?? 'record';
         $this->index       = $property['index'] ?? $this->type->get('index');
 
@@ -155,12 +163,18 @@ class Property
         }
     }
 
-    public function addOption(Option $option)
+    /**
+     * @param Option $option
+     */
+    public function addOption(Option $option): void
     {
         $this->options[$option->getKey()] = $option;
     }
 
-    public function addValidation(Validation $validation)
+    /**
+     * @param Validation $validation
+     */
+    public function addValidation(Validation $validation): void
     {
         $this->validation[$validation->getRule()] = $validation;
     }
@@ -174,9 +188,11 @@ class Property
     }
 
     /**
+     * @param string $index
+     *
      * @return string
      */
-    public function getType($index = 'type'): string
+    public function getType(string $index = 'type'): string
     {
         return $this->type->get($index);
     }

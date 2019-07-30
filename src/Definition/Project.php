@@ -2,7 +2,9 @@
 
 namespace GreenCape\CodeGen\Definition;
 
+use Exception;
 use GreenCape\CodeGen\Inflector;
+use RuntimeException;
 
 /**
  * Class Project
@@ -24,7 +26,7 @@ use GreenCape\CodeGen\Inflector;
 class Project
 {
     /**
-     * The name of the project (package). Should be URL friendy, i.e., all lowercase without spaces.
+     * The name of the project (package). Should be URL friendly, i.e., all lowercase without spaces.
      * If omitted, the name is derived from the title. At least one of name or title must be declared.
      *
      * @var string
@@ -119,7 +121,7 @@ class Project
      *
      * @param array $config The project settings
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(array $config)
     {
@@ -130,28 +132,25 @@ class Project
     /**
      * Initialise the project properties
      *
-     * @param  array $properties The properties
+     * @param array $properties The properties
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private function init(array $properties)
+    private function init(array $properties): void
     {
         $this->name  = $properties['name'] ?? '';
         $this->title = $properties['title'] ?? '';
 
-        if (empty($this->name) && empty($this->title)) {
-            throw new \Exception('One of "name" or "title" must be set.', 1101);
+        if ($this->name === '' && $this->title === '') {
+            throw new RuntimeException('One of "name" or "title" must be set.', 1101);
         }
 
-        if (empty($this->name) || empty($this->title)) {
-            $inflector = new Inflector();
+        if ($this->name === '') {
+            $this->name = (new Inflector())->apply('file', $this->title);
+        }
 
-            if (empty($this->title)) {
-                $this->title = $inflector->title($this->name);
-            }
-            else {
-                $this->name = $inflector->fileName($this->title);
-            }
+        if ($this->title === '') {
+            $this->title = (new Inflector())->apply('title', $this->name);
         }
 
         $this->repository  = $properties['repository'] ?? "undefined/$this->name";
@@ -173,7 +172,7 @@ class Project
      *
      * @param Entity $entity
      */
-    public function addEntity(Entity $entity)
+    public function addEntity(Entity $entity): void
     {
         $entity->setProject($this);
         $this->entities[$entity->name] = $entity;
@@ -262,7 +261,7 @@ class Project
     /**
      * @return Entity[]
      */
-    public function getEntities()
+    public function getEntities(): array
     {
         return $this->entities;
     }

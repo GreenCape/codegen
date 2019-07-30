@@ -23,26 +23,30 @@ class Validation
      */
     use ReadOnlyGuard;
 
+    /**
+     * Validation constructor.
+     *
+     * @param string|array $rule
+     */
     public function __construct($rule)
     {
         if (is_string($rule)) {
-            $this->rule = $rule;
+            $this->rule  = $rule;
             $this->value = true;
+
             return;
         }
 
         if (array_key_exists('rule', $rule)) {
-            $this->rule = $rule['rule'];
+            $this->rule  = $rule['rule'];
             $this->value = $rule['value'];
 
             return;
         }
 
         reset($rule);
-        $this->rule = key($rule);
+        $this->rule  = key($rule);
         $this->value = $rule[$this->rule];
-
-        return;
     }
 
     /**

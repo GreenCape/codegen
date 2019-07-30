@@ -3,12 +3,14 @@
 namespace GreenCape\CodeGen\Tests\Unit;
 
 use GreenCape\CodeGen\Inflector;
+use PHPUnit\Framework\TestCase;
 
-class InflectorTest extends \PHPUnit\Framework\TestCase
+class InflectorTest extends TestCase
 {
     /** @var  Inflector */
     private $inflector;
 
+    /** @var array */
     private $testData = [
         'title'     => 'Test Data',
         'variable'  => 'testData',
@@ -24,7 +26,10 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
         $this->inflector = new Inflector();
     }
 
-    public function inflectionData()
+    /**
+     * @return array
+     */
+    public function inflectionData(): array
     {
         $cases = [];
         foreach ($this->testData as $key => $value) {
@@ -43,7 +48,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromTitleTo($filter, $expected)
+    public function testConvertFromTitleTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['title']));
     }
@@ -54,7 +59,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromVariableTo($filter, $expected)
+    public function testConvertFromVariableTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['variable']));
     }
@@ -65,7 +70,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromClassTo($filter, $expected)
+    public function testConvertFromClassTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['class']));
     }
@@ -76,7 +81,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromTableTo($filter, $expected)
+    public function testConvertFromTableTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['table']));
     }
@@ -87,7 +92,7 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromDashTo($filter, $expected)
+    public function testConvertFromDashTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['dash']));
     }
@@ -98,12 +103,15 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
      * @param $filter
      * @param $expected
      */
-    public function testConvertFromNamespaceTo($filter, $expected)
+    public function testConvertFromNamespaceTo($filter, $expected): void
     {
         $this->assertEquals($expected, $this->inflector->apply($filter, $this->testData['namespace']));
     }
 
-    public function numerationData()
+    /**
+     * @return array
+     */
+    public function numerationData(): array
     {
         return [
             [
@@ -124,10 +132,10 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider numerationData
      *
-     * @param $singular
-     * @param $plural
+     * @param string $singular
+     * @param string $plural
      */
-    public function testSingular($singular, $plural)
+    public function testSingular(string $singular, string $plural): void
     {
         $this->assertEquals($singular, $this->inflector->singular($plural));
     }
@@ -135,10 +143,10 @@ class InflectorTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider numerationData
      *
-     * @param $singular
-     * @param $plural
+     * @param string $singular
+     * @param string $plural
      */
-    public function testPlural($singular, $plural)
+    public function testPlural(string $singular, string $plural): void
     {
         $this->assertEquals($plural, $this->inflector->plural($singular));
     }

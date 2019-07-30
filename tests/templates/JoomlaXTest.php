@@ -2,10 +2,13 @@
 
 namespace GreenCape\CodeGen\Tests\Templates;
 
+use Exception;
 use GreenCape\CodeGen\Definition\Project;
+use GreenCape\CodeGen\Generator;
 use Overtrue\PHPLint\Linter;
+use PHPUnit\Framework\TestCase;
 
-class JoomlaXTest extends \PHPUnit\Framework\TestCase
+class JoomlaXTest extends TestCase
 {
     private $projectFile;
 
@@ -25,18 +28,19 @@ class JoomlaXTest extends \PHPUnit\Framework\TestCase
     public function tearDown()
     {
         if (is_dir($this->outputDir)) {
-            #`rm -rf $this->outputDir`;
+            shell_exec("rm -rf {$this->outputDir}");
         }
     }
 
     /**
      * @testdox Joomla! X template compiles
+     * @throws Exception
      */
-    public function testJoomlaX()
+    public function testJoomlaX(): void
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
 
-        (new \GreenCape\CodeGen\Generator())
+        (new Generator())
             ->project($project)
             ->filenameFilter('class')
             ->template($this->templateDir)
@@ -49,7 +53,7 @@ class JoomlaXTest extends \PHPUnit\Framework\TestCase
     /**
      * @testdox The generated PHP files do not contain syntax errors
      */
-    public function testLint()
+    public function testLint(): void
     {
         $linter = new Linter($this->outputDir, ['build'], ['php']);
 

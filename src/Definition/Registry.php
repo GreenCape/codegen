@@ -25,7 +25,7 @@ class Registry
      *
      * @param Entity $entity
      */
-    public function registerEntity(Entity $entity)
+    public function registerEntity(Entity $entity): void
     {
         $entityName                  = $entity->getName();
         $this->entities[$entityName] = $entity;
@@ -48,7 +48,7 @@ class Registry
      * @param string   $entityName
      * @param callable $f
      */
-    public function registerCallback(string $entityName, $f)
+    public function registerCallback(string $entityName, $f): void
     {
         if (isset($this->entities[$entityName])) {
             $f($this->entities[$entityName]);

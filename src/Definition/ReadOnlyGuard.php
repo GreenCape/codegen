@@ -2,6 +2,8 @@
 
 namespace GreenCape\CodeGen\Definition;
 
+use RuntimeException;
+
 /**
  * Trait ReadOnlyGuard
  *
@@ -20,8 +22,8 @@ trait ReadOnlyGuard
      */
     public function __get($property)
     {
-        if (method_exists($this, 'get' . ucfirst($property))) {
-            return call_user_func([$this, 'get' . ucfirst($property)]);
+        if ($this->hasGetter($property)) {
+            return $this->{'get' . ucfirst($property)}();
         }
 
         return $this->{$property};
@@ -31,12 +33,42 @@ trait ReadOnlyGuard
      * Write Guard
      *
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
      *
-     * @throws \Exception
+     * @throws RuntimeException
      */
-    public function __set($property, $value)
+    public function __set(string $property, $value)
     {
-        throw new \Exception('Properties are read-only', 9001);
+        throw new RuntimeException('Properties are read-only', 9001);
+    }
+
+    /**
+     * @param string $property
+     *
+     * @return bool
+     */
+    private function hasGetter(string $property): bool
+    {
+        return method_exists($this, 'get' . ucfirst($property));
+    }
+
+    /**
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function __isset(string $property): bool
+    {
+        return $this->hasGetter($property) || $this->hasProperty($property);
+    }
+
+    /**
+     * @param string $property
+     *
+     * @return bool
+     */
+    private function hasProperty(string $property): bool
+    {
+        return (bool) property_exists($this, $property);
     }
 }

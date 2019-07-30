@@ -2,10 +2,13 @@
 
 namespace GreenCape\CodeGen\Tests\Templates;
 
+use Exception;
 use GreenCape\CodeGen\Definition\Project;
+use GreenCape\CodeGen\Generator;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
-class SwaggerTest extends \PHPUnit\Framework\TestCase
+class SwaggerTest extends TestCase
 {
     private $projectFile;
 
@@ -25,21 +28,22 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     public function tearDown()
     {
         if (is_dir($this->outputDir)) {
-            #`rm -rf $this->outputDir`;
+            #shell_exec("rm -rf {$this->outputDir}");
         }
     }
 
     /**
      * @testdox OpenAPI 2 template compiles
+     * @throws Exception
      */
-    public function testSwagger()
+    public function testSwagger(): void
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
 
-        (new \GreenCape\CodeGen\Generator())->project($project)
-                                            ->template($this->templateDir)
-                                            ->output($this->outputDir)
-                                            ->generate()
+        (new Generator())->project($project)
+                         ->template($this->templateDir)
+                         ->output($this->outputDir)
+                         ->generate()
         ;
 
         $swagger = Yaml::parse(file_get_contents($this->outputDir . '/swagger.yml'));
@@ -52,9 +56,9 @@ class SwaggerTest extends \PHPUnit\Framework\TestCase
     /**
      * @testdox The generated YAML file is valid against the Swagger 2.0 (OpenAPI 2.0) schema and spec
      */
-    public function testValidity()
+    public function testValidity(): void
     {
-        $output = `docker run --rm -v \$PWD:/src advancedtelematic/swagger-cli swagger validate tests/tmp/swagger.io/swagger.yml`;
+        $output = shell_exec('docker run --rm -v $PWD:/src advancedtelematic/swagger-cli swagger validate tests/tmp/swagger.io/swagger.yml');
 
         $this->assertEquals('tests/tmp/swagger.io/swagger.yml is valid', trim($output));
     }

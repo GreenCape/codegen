@@ -2,10 +2,13 @@
 
 namespace GreenCape\CodeGen\Tests\Templates;
 
+use Exception;
 use GreenCape\CodeGen\Definition\Project;
+use GreenCape\CodeGen\Generator;
 use Overtrue\PHPLint\Linter;
+use PHPUnit\Framework\TestCase;
 
-class Joomla25Test extends \PHPUnit\Framework\TestCase
+class Joomla25Test extends TestCase
 {
     private $projectFile;
 
@@ -25,18 +28,19 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
     public function tearDown()
     {
         if (is_dir($this->outputDir)) {
-            #`rm -rf $this->outputDir`;
+            shell_exec("rm -rf {$this->outputDir}");
         }
     }
 
     /**
      * @testdox Joomla 2.5 template compiles
+     * @throws Exception
      */
-    public function testJoomla25()
+    public function testJoomla25(): void
     {
         $project = new Project(json_decode(file_get_contents($this->projectFile), true));
 
-        (new \GreenCape\CodeGen\Generator())
+        (new Generator())
             ->project($project)
             ->template($this->templateDir)
             ->output($this->outputDir)
@@ -50,7 +54,7 @@ class Joomla25Test extends \PHPUnit\Framework\TestCase
     /**
      * @testdox The generated PHP files do not contain syntax errors
      */
-    public function testLint()
+    public function testLint(): void
     {
         $linter = new Linter($this->outputDir, ['build'], ['php']);
 

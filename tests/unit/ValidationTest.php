@@ -3,23 +3,38 @@
 namespace GreenCape\CodeGen\Tests\Unit;
 
 use GreenCape\CodeGen\Definition\Validation;
+use PHPUnit\Framework\TestCase;
 
-class ValidationTest extends \PHPUnit\Framework\TestCase
+class ValidationTest extends TestCase
 {
-    public function validationData()
+    /**
+     * @return array
+     */
+    public function validationData(): array
     {
         return [
-            'string' => [
+            'string'       => [
                 'positive',
-                ['rule' => 'positive', 'value' => true],
+                [
+                    'rule'  => 'positive',
+                    'value' => true,
+                ],
             ],
             'key => value' => [
                 ['length' => 64],
-                ['rule' => 'length', 'value' => 64],
+                [
+                    'rule'  => 'length',
+                    'value' => 64,
+                ],
             ],
-            'rule/value' => [
-                ['rule' => 'length', 'value' => 64],
-                ['rule' => 'length', 'value' => 64],
+            'rule/value'   => [
+                ['rule'  => 'length',
+                 'value' => 64,
+                ],
+                [
+                    'rule'  => 'length',
+                    'value' => 64,
+                ],
             ],
         ];
     }
@@ -27,9 +42,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider validationData
      *
-     * @testdox
+     * @param $arg
+     * @param $expected
      */
-    public function testValidation($arg, $expected)
+    public function testValidation($arg, $expected): void
     {
         $validation = new Validation($arg);
 

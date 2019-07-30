@@ -4,53 +4,62 @@ namespace GreenCape\CodeGen\Tests\Unit;
 
 use GreenCape\CodeGen\Definition\Property;
 use GreenCape\CodeGen\Definition\Type;
+use PHPUnit\Framework\TestCase;
+use Twig_Environment;
+use Twig_Error_Loader;
+use Twig_Error_Runtime;
+use Twig_Error_Syntax;
+use Twig_Loader_Filesystem;
 
-class TypeTest extends \PHPUnit\Framework\TestCase
+class TypeTest extends TestCase
 {
-    public function typeData()
+    /**
+     * @return array
+     */
+    public function typeData(): array
     {
         return [
-            'string-integer' => [
+            'string-integer'  => [
                 'integer',
                 ['type' => 'integer'],
             ],
-            'array-integer' => [
+            'array-integer'   => [
                 ['type' => 'integer'],
                 ['type' => 'integer'],
             ],
-            'string-string' => [
+            'string-string'   => [
                 'string',
                 ['type' => 'string'],
             ],
-            'array-string' => [
+            'array-string'    => [
                 ['type' => 'string'],
                 ['type' => 'string'],
             ],
             'string-password' => [
                 'password',
                 [
-                    'type' => 'string',
+                    'type'  => 'string',
                     'input' => 'password',
                 ],
             ],
-            'array-password' => [
+            'array-password'  => [
                 ['type' => 'password'],
                 [
-                    'type' => 'string',
+                    'type'  => 'string',
                     'input' => 'password',
                 ],
             ],
             'string-richtext' => [
                 'richtext',
                 [
-                    'type' => 'string',
+                    'type'  => 'string',
                     'input' => 'editor',
                 ],
             ],
-            'array-richtext' => [
+            'array-richtext'  => [
                 ['type' => 'richtext'],
                 [
-                    'type' => 'string',
+                    'type'  => 'string',
                     'input' => 'editor',
                 ],
             ],
@@ -63,9 +72,9 @@ class TypeTest extends \PHPUnit\Framework\TestCase
      * @testdox
      *
      * @param string|array $config
-     * @param array $expected
+     * @param array        $expected
      */
-    public function testType($config, $expected)
+    public function testType($config, $expected): void
     {
         $type = new Type($config);
 
@@ -74,17 +83,22 @@ class TypeTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testSelectOptionsAsStrings()
+    /**
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
+     */
+    public function testSelectOptionsAsStrings(): void
     {
         $property = new Property([
-            'name' => 'test_property',
-            'type' => 'select',
+            'name'    => 'test_property',
+            'type'    => 'select',
             'options' => [
                 'foo',
                 'bar',
             ],
         ]);
-        $twig     = new \Twig_Environment(new \Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 
@@ -97,23 +111,28 @@ class TypeTest extends \PHPUnit\Framework\TestCase
         ], $result['options']);
     }
 
-    public function testSelectOptionsAsArray()
+    /**
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
+     */
+    public function testSelectOptionsAsArray(): void
     {
         $property = new Property([
-            'name' => 'test_property',
-            'type' => 'select',
+            'name'    => 'test_property',
+            'type'    => 'select',
             'options' => [
                 [
-                    'key' => 'one',
+                    'key'   => 'one',
                     'value' => 'foo',
                 ],
                 [
-                    'key' => 'two',
+                    'key'   => 'two',
                     'value' => 'bar',
                 ],
             ],
         ]);
-        $twig     = new \Twig_Environment(new \Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 
@@ -126,138 +145,141 @@ class TypeTest extends \PHPUnit\Framework\TestCase
         ], $result['options']);
     }
 
-    public function dataTypes()
+    /**
+     * @return array
+     */
+    public function dataTypes(): array
     {
         return [
             [
                 'boolean',
                 [
-                    'type' => 'boolean',
-                    'len' => 1,
-                    'input' => 'yesno',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'boolean',
+                    'len'        => 1,
+                    'input'      => 'yesno',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'csv',
                 [
-                    'type' => 'string',
-                    'len' => 255,
-                    'input' => 'text',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 255,
+                    'input'      => 'text',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'date',
                 [
-                    'type' => 'date',
-                    'len' => 10,
-                    'input' => 'calendar',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'date',
+                    'len'        => 10,
+                    'input'      => 'calendar',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'id',
                 [
-                    'type' => 'integer',
-                    'len' => 10,
-                    'input' => 'none',
-                    'role' => 'key',
-                    'index' => 'unique',
+                    'type'       => 'integer',
+                    'len'        => 10,
+                    'input'      => 'none',
+                    'role'       => 'key',
+                    'index'      => 'unique',
                     'validation' => ['positive' => 1],
                 ],
             ],
             [
                 'integer',
                 [
-                    'type' => 'integer',
-                    'len' => 10,
-                    'input' => 'number',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'integer',
+                    'len'        => 10,
+                    'input'      => 'number',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'json',
                 [
-                    'type' => 'string',
-                    'len' => 255,
-                    'input' => 'text',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 255,
+                    'input'      => 'text',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'password',
                 [
-                    'type' => 'string',
-                    'len' => 64,
-                    'input' => 'password',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 64,
+                    'input'      => 'password',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'richtext',
                 [
-                    'type' => 'string',
-                    'len' => 4096,
-                    'input' => 'editor',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 4096,
+                    'input'      => 'editor',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'select',
                 [
-                    'type' => 'string',
-                    'len' => 64,
-                    'input' => 'select',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 64,
+                    'input'      => 'select',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'string',
                 [
-                    'type' => 'string',
-                    'len' => 255,
-                    'input' => 'text',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'string',
+                    'len'        => 255,
+                    'input'      => 'text',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
             [
                 'title',
                 [
-                    'type' => 'string',
-                    'len' => 64,
-                    'input' => 'text',
-                    'role' => 'title',
-                    'index' => 'unique',
+                    'type'       => 'string',
+                    'len'        => 64,
+                    'input'      => 'text',
+                    'role'       => 'title',
+                    'index'      => 'unique',
                     'validation' => [],
                 ],
             ],
             [
                 'default',
                 [
-                    'type' => 'default',
-                    'len' => 0,
-                    'input' => '',
-                    'role' => '',
-                    'index' => '',
+                    'type'       => 'default',
+                    'len'        => 0,
+                    'input'      => '',
+                    'role'       => '',
+                    'index'      => '',
                     'validation' => [],
                 ],
             ],
@@ -266,14 +288,21 @@ class TypeTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider dataTypes
+     *
+     * @param $declaredType
+     * @param $expected
+     *
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
      */
-    public function testDefaults($declaredType, $expected)
+    public function testDefaults($declaredType, $expected): void
     {
         $property = new Property([
             'name' => 'test_property',
             'type' => $declaredType,
         ]);
-        $twig     = new \Twig_Environment(new \Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 

@@ -2,6 +2,9 @@
 
 namespace GreenCape\CodeGen\Definition;
 
+use Exception;
+use RuntimeException;
+
 /**
  * Class Relation
  *
@@ -73,18 +76,33 @@ class Relation
      */
     use ReadOnlyGuard;
 
+    /**
+     * Relation constructor.
+     *
+     * @param array    $config
+     * @param Entity   $entity
+     * @param Registry $registry
+     *
+     * @throws Exception
+     */
     public function __construct(array $config, Entity $entity, Registry $registry)
     {
         $this->registry = $registry;
         $this->init($config, $entity);
     }
 
-    private function init(array $properties, Entity $current)
+    /**
+     * @param array  $properties
+     * @param Entity $current
+     *
+     * @throws Exception
+     */
+    private function init(array $properties, Entity $current): void
     {
         $this->name = $properties['name'] ?? strtolower($properties['entity']);
 
         if (empty($properties['type'])) {
-            throw new \Exception('Relation type must be specified', 1204);
+            throw new RuntimeException('Relation type must be specified', 1204);
         }
 
         $this->type = $properties['type'];
@@ -104,7 +122,7 @@ class Relation
         $this->entity    = new Entity(['name' => $properties['entity']]);
         $this->reference = new Property(['name' => $properties['reference'] ?? 'id']);
 
-        $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties, $current) {
+        $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties) {
             $this->entity = $entity;
             if (empty($properties['reference'])) {
                 $this->reference = $entity->getSpecial()['key'];
@@ -165,7 +183,7 @@ class Relation
     /**
      * @return Entity|null
      */
-    public function getMap()
+    public function getMap(): ?Entity
     {
         return $this->map;
     }
