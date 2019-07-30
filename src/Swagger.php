@@ -42,7 +42,7 @@ class Swagger
         $image   = 'swaggerapi/swagger-codegen-cli';
         $version = '2.4.7';
 
-        $dockerCommand = "docker run --rm {$volume} --user {$userId} --name temp_swagger {$image}:{$version} {$command} {$paramString}";
+        $dockerCommand = "docker run --rm {$volume} --user {$userId} --name temp_swagger {$image}:{$version} {$command} {$paramString} 2>&1";
 
         return shell_exec($dockerCommand);
     }
