@@ -5,6 +5,7 @@ namespace GreenCape\CodeGen\Tests\Templates;
 use Exception;
 use GreenCape\CodeGen\Definition\Project;
 use GreenCape\CodeGen\Generator;
+use GreenCape\CodeGen\Swagger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
@@ -28,12 +29,12 @@ class SwaggerTest extends TestCase
     public function tearDown()
     {
         if (is_dir($this->outputDir)) {
-            #shell_exec("rm -rf {$this->outputDir}");
+            shell_exec("rm -rf {$this->outputDir}");
         }
     }
 
     /**
-     * @testdox OpenAPI 2 template compiles
+     * @testdox OpenAPI 3 template compiles
      * @throws Exception
      */
     public function testSwagger(): void
@@ -54,12 +55,14 @@ class SwaggerTest extends TestCase
     }
 
     /**
-     * @testdox The generated YAML file is valid against the Swagger 2.0 (OpenAPI 2.0) schema and spec
+     * @testdox The generated YAML file is valid against the OpenAPI 3.0 schema and spec
      */
     public function testValidity(): void
     {
-        $output = shell_exec('docker run --rm -v $PWD:/src advancedtelematic/swagger-cli swagger validate tests/tmp/swagger.io/swagger.yml');
+        $swagger = new Swagger();
 
-        $this->assertEquals('tests/tmp/swagger.io/swagger.yml is valid', trim($output));
+        $output = $swagger->validate('tests/tmp/swagger.io/swagger.yml');
+
+        $this->assertTrue($output);
     }
 }

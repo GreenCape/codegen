@@ -1,78 +1,126 @@
 <?template scope="application"?>
 swagger: '2.0'
 info:
-  title: {{ project.title }}
-  description: {{ project.description }}
-  version: "{{ project.version }}"
-schemes:
-  - https
+  title: '{{ project.title }}'
+  description: '{{ project.description }}'
+  termsOfService: ''
+  contact:
+{% for author in project.authors | slice(0,1) %}
+    name: '{{ author.name }}'
+    url: http://www.example.com/support
+    email: '{{ author.email }}'
+{% endfor %}
+  license:
+    name: 'GPL 2.0+'
+    url: 'http://www.gnu.org/licenses/gpl-2.0.html'
+  version: '{{ project.version }}'
+host: api.example.com
 basePath: /v1
+consumes:
+  - application/json
 produces:
   - application/json
 paths:
 {% for entity in project.entities %}
   /{{ entity.name | plural | dash }}:
     get:
-      operationId: "get{{ entity.name | plural | class }}"
-      summary: List {{ entity.name | plural | title }}
-      description: |
-        The {{ entity.name | plural | title }} endpoint returns information about the {{ entity.name | plural | title | lower }}.
-        The response includes the display name and other details about each {{ entity.name | singular | title | lower }},
-        and lists the {{ entity.name | plural | title | lower }} in the proper display order.
+      operationId: 'get{{ entity.name | plural | class }}'
+      summary: 'Returns a list of {{ entity.name | plural | title | lower }}.'
+      description: 'The ´{{ entity.name | plural | dash }}´ endpoint returns information about the {{ entity.name | plural | title | lower }}. The response includes the display name and other details about each {{ entity.name | singular | title | lower }}, and lists the {{ entity.name | plural | title | lower }} in the proper display order.'
       tags:
-        - {{ entity.name | plural | title }}
+        - '{{ entity.name | plural | title }}'
       responses:
-        200:
-          description: An array of {{ entity.name | plural | title | lower }}
+        '200':
+          description: 'A JSON array of {{ entity.name | plural | title | lower }}.'
           schema:
             type: array
             items:
               $ref: '#/definitions/{{ entity.name | singular | class }}'
+        '401':
+          $ref: '#/responses/UnauthorizedError'
         default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          $ref: '#/responses/UnexpectedError'
+
+    #put:
+
     post:
-      operationId: "create{{ entity.name | singular | class }}"
-      summary: Create {{ entity.name | singular | title }}
-      description: |
+      operationId: 'create{{ entity.name | singular | class }}'
+      summary: 'Creates a new {{ entity.name | singular | title | lower }}'
+      description: 'The ´{{ entity.name | plural | dash }}´ endpoint creates a new {{ entity.name | plural | title | lower }}. The response contains the newly created {{ entity.name | singular | title | lower }}.'
       tags:
-        - {{ entity.name | plural | title }}
+        - '{{ entity.name | plural | title }}'
       responses:
-        200:
-          description: The {{ entity.name | singular | title | lower }} with the newly created ID.
+        '201':
+          description: 'The {{ entity.name | singular | title | lower }} with the newly created ID.'
           schema:
             $ref: '#/definitions/{{ entity.name | singular | class }}'
+        '401':
+          $ref: '#/responses/UnauthorizedError'
         default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          $ref: '#/responses/UnexpectedError'
+
+    #delete:
+
+    #options:
+
+    #head:
+
+    #patch:
+
+    #parameters:
+
   /{{ entity.name | plural | dash }}/{id}:
     get:
-      operationId: "get{{ entity.name | singular | class }}"
-      summary: Get the {{ entity.name | singular | title }} with the given ID.
-      description: |
-      tags:
-        - {{ entity.name | plural | title }}
+      operationId: 'get{{ entity.name | singular | class }}'
+      summary: 'Returns the {{ entity.name | singular | title }} with the given ID.'
       parameters:
         - name: id
           in: path
           required: true
+          description: 'The {{ entity.name | singular | title }} ID.'
           type: integer
           format: int32
+          minimum: 1
+      description: 'The ´{{ entity.name | plural | dash }}/{id}´ endpoint returns information about the {{ entity.name | plural | title | lower }}. The response includes the display name and other details about the {{ entity.name | singular | title | lower }}.'
+      tags:
+        - '{{ entity.name | plural | title }}'
       responses:
         '200':
-          description:  The {{ entity.name | singular | title | lower }}
+          description: 'The {{ entity.name | singular | title | lower }} with the given ID.'
           schema:
             $ref: '#/definitions/{{ entity.name | singular | class }}'
+        '400':
+          description: 'The specified {{ entity.name | singular | title | lower }} ID is invalid (not a number).'
+        '401':
+          $ref: '#/responses/UnauthorizedError'
+        '404':
+          description: 'No {{ entity.name | singular | title | lower }} found with the specified ID.'
+        default:
+          $ref: '#/responses/UnexpectedError'
+
+    #put:
+
+    #post:
+
+    #delete:
+
+    #options:
+
+    #head:
+
+    #patch:
+
+    #parameters:
+
 {% endfor %}
+
 definitions:
 {% for entity in project.entities %}
   {{ entity.name | singular | class }}:
     type: object
     properties:
 {% for property in entity.properties %}
-      {{ property.name }}:
+      '{{ property.name }}':
 {% if property.type == 'integer' %}
         type: integer
         format: int32
@@ -107,20 +155,33 @@ definitions:
 {% elseif property.type == 'richtext' %}
         type: string
 {% else %}
-        type: {{ property.type }}
+        type: '{{ property.type }}'
 {% endif %}
 {% if property.description %}
-        description: {{ property.description }}
+        description: '{{ property.description }}'
 {% endif %}
 {% endfor %}
+
 {% endfor %}
   Error:
     type: object
     properties:
       code:
-        type: integer
-        format: int32
+        type: string
       message:
         type: string
-      fields:
-        type: string
+    required:
+      - code
+      - message
+
+responses:
+  UnauthorizedError:
+    description: 'API key is missing or invalid'
+    schema:
+      type: string
+
+  UnexpectedError:
+    description: 'Unexpected error'
+    schema:
+      $ref: '#/definitions/Error'
+

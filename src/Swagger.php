@@ -106,4 +106,17 @@ class Swagger
     {
         return $this->execute('version');
     }
+
+    /**
+     * @param string $specification Path relative to current working directory
+     *
+     * @return bool
+     */
+    public function validate(string $specification): bool
+    {
+        $result = $this->execute('validate', "--input-spec /local/{$specification}");
+        $expected = "Validating spec file (/local/{$specification})\n";
+
+        return $result === $expected;
+    }
 }

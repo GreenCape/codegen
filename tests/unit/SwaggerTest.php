@@ -49,19 +49,22 @@ class SwaggerTest extends TestCase
      */
     public function testSwaggerGenerator(): void
     {
-        $this->markTestSkipped('Skipped until Swagger problem is solved');
         $swagger = new Swagger();
 
-        $path = dirname(__DIR__) . '/tmp/swagger.io/api-doc';
+        $path = 'tests/tmp/swagger.io/api-doc';
 
         if (!file_exists($path) && !mkdir($path, 0777, true) && !is_dir($path)) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
         }
 
+        file_put_contents("$path/.swagger-codegen-ignore", '');
+
         $swagger->generate('--input-spec /local/tests/tmp/swagger.io/swagger.yml --lang html2 --output /local/tests/tmp/swagger.io/api-doc');
 
         $this->assertFileExists("{$path}/index.html");
         $this->assertEquals(getmyuid(), fileowner("{$path}/index.html"));
+
+        shell_exec("rm -rf {$path}");
     }
 
     /**
@@ -117,7 +120,7 @@ class SwaggerTest extends TestCase
     {
         $swagger = new Swagger();
 
-        $swagger->meta('-o /local/tests/tmp/generated');
+        $swagger->meta('--output /local/tests/tmp/generated');
 
         $this->assertFileExists('tests/tmp/generated/pom.xml');
         shell_exec('rm -rf tests/tmp/generated');
@@ -133,5 +136,29 @@ class SwaggerTest extends TestCase
         $result = $swagger->version();
 
         $this->assertRegExp('~^\d+\.\d+\.\d+~', $result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli validate - A valid Swagger 2.0 script get an OK
+     */
+    public function testValidateS2ok(): void
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->validate('tests/fixtures/swagger2-ok.yaml');
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @testdox swagger-codegen-cli validate - An invalid Swagger 2.0 script is rejected
+     */
+    public function testValidateS2nok(): void
+    {
+        $swagger = new Swagger();
+
+        $result = $swagger->validate('tests/fixtures/swagger2-nok.yaml');
+
+        $this->assertFalse($result);
     }
 }
