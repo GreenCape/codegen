@@ -78,7 +78,9 @@ class Generator
             shell_exec("rm -rf $path");
         }
         if (!mkdir($path, 0777, true) && !is_dir($path)) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+            // @codeCoverageIgnoreEnd
         }
 
         return $this;
@@ -137,7 +139,9 @@ class Generator
 
         if (is_dir($source)) {
             if (!mkdir($destination, 0777, true) && !is_dir($destination)) {
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $destination));
+                // @codeCoverageIgnoreEnd
             }
 
             return;
@@ -167,7 +171,7 @@ class Generator
         $replace     = [
             $this->templatePath => $this->outputPath,
             '$'                 => $this->inflector->apply($this->filenameFilter, $this->project->name),
-            '#s'                => $this->inflector->apply($this->filenameFilter, $this->inflector->plural($name)),
+            '##'                => $this->inflector->apply($this->filenameFilter, $this->inflector->plural($name)),
             '#'                 => $this->inflector->apply($this->filenameFilter, $name),
         ];
         $destination = str_replace(array_keys($replace), array_values($replace), $source);

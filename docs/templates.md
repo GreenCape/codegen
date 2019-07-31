@@ -12,7 +12,7 @@ Character | Replacement    | Example
 ----------+----------------+--------
 `$`       | `project.name` | `$.css` => `my_project.css`
 `#`       | `entity.name`  | `#_model.php` => `person_model.php`
-`#s`      | `entity.name | plural` | `#s_view.php` => `people_view.php`
+`##`      | `entity.name | plural` | `##_view.php` => `people_view.php`
 
 As some projects use the CamalCase notation, the Generator additionally supports the 'class' filter: `Generator::filenameFilter('class'))`.
  
@@ -20,7 +20,7 @@ Character | Replacement    | Example
 ----------+----------------+--------
 `$`       | `project.name` | `$.css` => `MyProject.css`
 `#`       | `entity.name`  | `#Model.php` => `PersonModel.php`
-`#s`      | `entity.name | plural` | `#sView.php` => `PeopleView.php`
+`##`      | `entity.name | plural` | `##View.php` => `PeopleView.php`
 
 ## Scopes
 

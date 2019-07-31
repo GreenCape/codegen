@@ -2,6 +2,17 @@
 
 ## belongsTo
 
+#### Receipe: `A` belongsTo `B`
+
+* Set `A.property.name` to a convenient name, fx. `b_id` (lowercase of `B` with suffix `_id`).
+* Set `A.property.type` to the same type as the primary key of `B`. If you omit it, it will be set automatically.
+* Set `A.relation.name` to the name of the property to contain the related `B` entity, fx. `b` (lowercase of `B`).
+* Set `A.relation.type` to `"belongsTo"`. 
+* Set `A.relation.property` to `A.property.name`. 
+* Set `A.relation.entity` to `B`. 
+* Set `A.relation.reference`  to the identifying property of `B` (if different from `id`). The referenced column should have a unique index. 
+
+**Example** with `A` = Article, `B` = User: 
 ```json
 {
   "name": "Article",
@@ -12,23 +23,15 @@
   ],
   "relations": [
     {
-      "name": "user",
+      "name": "author",
       "type": "belongsTo",
-      "property": "user_id",
-      "entity": "User"
+      "property": "author_id",
+      "entity": "User",
+      "reference": "id"
     }
   ]
 }
 ```
-
-#### Receipe: `A` belongsTo `B`
-
-* Set `A.property.name` to a convenient name, fx. `B_id`.
-* Set `A.property.type` to the same type as the primary key of `B`. If you omit it, it will be set automatically.
-* Set `A.relation.name` to the name of the property to contain the related `B` entity, fx. `b` (lowercase of `B`).
-* Set `A.relation.type` to `belongsTo`. 
-* Set `A.relation.property` to `A.property.name`. 
-* Set `A.relation.entity` to `B`. 
 
 ## hasOne
 
@@ -45,6 +48,17 @@ There are two kinds of `hasManyThru` relations. One is using a mapping entity, t
 This relation uses a list of foreign keys, either as CSV or as JSON.
 You must provide the name of the property for the ids in the relation definition.
 
+#### Receipe: `A` hasMany `B` thru property
+
+* Set `A.property.name` to a convenient name, fx. `b_ids` (lowercase of `B` with suffix `_ids`).
+* Set `A.property.type` to `csv` or `json`.
+* Set `A.relation.name` to the name of the property to contain the array/collection of related `B` entities, fx. `bs` (lowercase plural of `B`).
+* Set `A.relation.type` to `hasManyThru`. 
+* Set `A.relation.property` to `A.property.name`. 
+* Set `A.relation.entity` to `B`.
+* Set `A.relation.reference` to the identifying property of `B` (if different from `id`). The referenced column should have a unique index.
+
+**Example** with `A` = Article, `B` = Tag: 
 ```json
 {
   "name": "Article",
@@ -83,13 +97,3 @@ id | tag
 8 | Eight
 
 The article is tagged with One, Three, Four, Seven, and Eight. While it is easy to retrieve the tags for an article, this method is not suitable for searching articles for a specific tag.
-
-#### Receipe: `A` hasMany `B` thru property
-
-* Set `A.property.name` to a convenient name, fx. `B_ids`.
-* Set `A.property.type` to `csv` or `json`.
-* Set `A.relation.name` to the name of the property to contain the array/collection of related `B` entities, fx. `bs` (lowercase plural of `B`).
-* Set `A.relation.type` to `hasManyThru`. 
-* Set `A.relation.property` to `A.property.name`. 
-* Set `A.relation.entity` to `B`.
-* Set `A.relation.reference` to the identifying property of `B` (if different from id). The referenced column should have a unique index.
