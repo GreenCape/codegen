@@ -1,5 +1,5 @@
 <?template scope="entity"?>
-{% if entity.role == 'main' and entity.special.featured and antity.special.key %}
+{% if entity.role == 'main' and entity.special.featured and entity.special.key %}
 <?php
 /**
  * {{ project.title }} Featured {{ entity.name | title }} Admin List Controller
