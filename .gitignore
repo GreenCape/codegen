@@ -3,3 +3,4 @@
 /vendor/
 /.phplint-cache
 /docs/examples/
+/generated/

@@ -30,6 +30,8 @@ class Generator
     private $inflector;
 
     /**
+     * Set the project definition
+     *
      * @param Project $project
      *
      * @return Generator
@@ -42,6 +44,8 @@ class Generator
     }
 
     /**
+     * Set the filter that turns project and entity names into valid file names
+     *
      * @param string $filter
      *
      * @return Generator
@@ -54,6 +58,8 @@ class Generator
     }
 
     /**
+     * Set the template path
+     *
      * @param string $path
      *
      * @return Generator
@@ -66,6 +72,10 @@ class Generator
     }
 
     /**
+     * Set the output path
+     *
+     * The path is created if necessary, its content is removed completely.
+     *
      * @param string $path
      *
      * @return Generator
@@ -87,6 +97,10 @@ class Generator
     }
 
     /**
+     * Generate the code
+     *
+     * The code is generated according to the project definition using the template and stored in the output directory.
+     *
      * @throws Exception
      */
     public function generate(): void
