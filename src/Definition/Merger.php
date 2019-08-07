@@ -74,9 +74,9 @@ class Merger
     private function addProperties($key, $addition): void
     {
         $this->projectDefinition['entities'][$key] = array_merge_recursive($this->projectDefinition['entities'][$key], [
-            'properties' => $addition['properties'],
-            'relations'  => $addition['relations'],
-            'filters'    => $addition['filters'],
+            'properties' => $addition['properties'] ?? [],
+            'relations'  => $addition['relations'] ?? [],
+            'filters'    => $addition['filters'] ?? [],
         ]);
     }
 
