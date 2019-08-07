@@ -24,6 +24,11 @@ class Option
     use ReadOnlyGuard;
 
     /**
+     * Provide a __toString implementation
+     */
+    use ToString;
+
+    /**
      * Option constructor.
      *
      * @param string|array $option

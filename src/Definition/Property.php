@@ -7,11 +7,13 @@ namespace GreenCape\CodeGen\Definition;
  *
  * @package GreenCape\CodeGen
  *
+ * @property-read array        $raw
  * @property-read string       $name
  * @property-read Type         $type
  * @property-read int          $len
  * @property-read string       $role
  * @property-read string       $input
+ * @property-read string       $size
  * @property-read string       $label
  * @property-read string       $description
  * @property-read string       $hint
@@ -59,6 +61,11 @@ class Property
      * @var string
      */
     private $input;
+
+    /**
+     * @var integer
+     */
+    private $size;
 
     /**
      * @var string
@@ -116,9 +123,19 @@ class Property
     private $index;
 
     /**
+     * @var array
+     */
+    private $raw;
+
+    /**
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
+
+    /**
+     * Provide a __toString implementation
+     */
+    use ToString;
 
     /**
      * Property constructor.
@@ -135,11 +152,13 @@ class Property
      */
     private function init(array $property): void
     {
+        $this->raw         = $property;
         $this->name        = $property['name'] ?? 'unnamed';
         $this->type        = new Type($property);
         $this->len         = $this->type->get('len');
         $this->role        = $property['role'] ?? $this->type->get('role');
         $this->input       = $property['input'] ?? $this->type->get('input');
+        $this->size        = (int) ($property['size'] ?? 0);
         $this->label       = $property['label'] ?? '';
         $this->description = $property['description'] ?? '';
         $this->hint        = $property['hint'] ?? '';
@@ -219,6 +238,14 @@ class Property
     public function getInput(): string
     {
         return $this->input;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getSize(): int
+    {
+        return $this->size;
     }
 
     /**

@@ -24,6 +24,11 @@ class Validation
     use ReadOnlyGuard;
 
     /**
+     * Provide a __toString implementation
+     */
+    use ToString;
+
+    /**
      * Validation constructor.
      *
      * @param string|array $rule

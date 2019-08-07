@@ -40,6 +40,21 @@ Usually, the application is supposed to expand the list into an array or a colle
 }
 ```
 
+## embedded
+
+Data is stored in a string.
+
+**Implicit settings:**
+
+```json
+{
+  "type": "string",
+  "len": 4096
+}
+```
+
+Usually, the application is supposed to expand the list into an array or a collection.
+
 ## id
 
 May occur only once per entity.
@@ -148,3 +163,7 @@ May occur only once per entity.
   "index": "unique"
 }
 ```
+
+## virtual
+
+Denotes a field not represented in the storage, but needs to be part of forms.

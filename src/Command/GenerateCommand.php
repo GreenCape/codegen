@@ -2,6 +2,7 @@
 
 namespace GreenCape\CodeGen\Command;
 
+use GreenCape\CodeGen\Definition\Merger;
 use GreenCape\CodeGen\Definition\Project;
 use GreenCape\CodeGen\Generator;
 use Symfony\Component\Console\Command\Command;
@@ -77,7 +78,16 @@ class GenerateCommand extends Command
             return 1;
         }
 
-        (new Generator())->project(new Project(json_decode(file_get_contents($this->project), true)))
+        $projectDefinition = json_decode(file_get_contents($this->project), true);
+
+        $featureFile = $this->template . '/.codegen/features.json';
+        if (is_readable($featureFile)) {
+            $projectDefinition = $this->mergeFeatures($projectDefinition, json_decode(file_get_contents($featureFile), true));
+        } else {
+            $this->io->writeln('No feature definition found for template ' . basename($this->template), OutputInterface::VERBOSITY_DEBUG);
+        }
+
+        (new Generator())->project(new Project($projectDefinition))
                          ->template($this->template)
                          ->output($this->output)
                          ->generate()
@@ -98,5 +108,19 @@ class GenerateCommand extends Command
             "Template:  {$this->template}",
             "Output:    {$this->output}",
         ], OutputInterface::VERBOSITY_DEBUG);
+    }
+
+    /**
+     * @param array $projectDefinition
+     * @param array $featureDefinition
+     *
+     * @return array
+     */
+    private function mergeFeatures(array $projectDefinition, array $featureDefinition)
+    {
+        $merger = new Merger($projectDefinition);
+        $merger->merge($featureDefinition);
+
+        return $merger->definition();
     }
 }

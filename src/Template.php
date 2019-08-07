@@ -5,6 +5,7 @@ namespace GreenCape\CodeGen;
 use Exception;
 use RuntimeException;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFilter;
 
@@ -77,15 +78,22 @@ class Template
             'dash',
             'file',
             'constant',
-            'namespace'
+            'namespace',
         ];
 
         if ($this->isVerbatim) {
             return $this->template;
         }
 
-        $twig = new Environment(new ArrayLoader([$this->templateFile => $this->template]));
-        array_map(function ($filter) use ($twig) { $this->addFilter($twig, $filter); }, $filters);
+        $twig = new Environment(new ArrayLoader([$this->templateFile => $this->template]), [
+            'debug' => true,
+            // ...
+        ]);
+        $twig->addExtension(new DebugExtension());
+
+        array_map(function ($filter) use ($twig) {
+            $this->addFilter($twig, $filter);
+        }, $filters);
 
         try {
             $template = $twig->render($this->templateFile, $context);
@@ -93,7 +101,7 @@ class Template
             throw new RuntimeException($e->getMessage(), 1000);
         }
 
-        return $template;
+        return preg_replace(["/[\t ]+\n/", "/\n\n\n+/"], ["\n", "\n\n"], $template);
     }
 
     /**

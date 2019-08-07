@@ -1,0 +1,620 @@
+{
+  "name": "content",
+  "title": "Content",
+  "repository": "nibralab/content",
+  "version": "1.0.0",
+  "build": "1",
+  "description": "Rebuild of the Joomla Core Content Component",
+  "type": "test",
+  "license": "GPL+2.0",
+  "copyright": "BSDS Braczek Software- und DatenSysteme",
+  "authors": [
+    {
+      "name": "Niels Braczek",
+      "email": "nbraczek@bsds.de"
+    }
+  ],
+  "supports": [
+    "acl",
+    "categories",
+    "lifecycle",
+    "locking",
+    "metadata",
+    "tags",
+    "versioning",
+    "workflow",
+    "multilanguage"
+  ],
+  "entities": [
+    {
+      "name": "Article",
+      "role": "main",
+      "storage": {
+        "type": "default",
+        "table": "content"
+      },
+      "filters": [
+      ],
+      "properties": [
+        {
+          "name": "id",
+          "role": "key"
+        },
+        {
+          "name": "title",
+          "role": "title"
+        },
+        {
+          "name": "alias",
+          "role": "alias"
+        },
+        {
+          "name": "articletext",
+          "type": "virtual",
+          "input": "richtext",
+          "label": "COM_CONTENT_FIELD_ARTICLETEXT_LABEL",
+          "description": "COM_CONTENT_FIELD_ARTICLETEXT_DESC"
+        },
+        {
+          "name": "introtext",
+          "role": "introtext",
+          "input": "none",
+          "label": "COM_CONTENT_FIELD_INTROTEXT_LABEL"
+        },
+        {
+          "name": "fulltext",
+          "role": "fulltext",
+          "input": "none",
+          "label": "COM_CONTENT_FIELD_FULLTEXT_LABEL"
+        },
+        {
+          "name": "created_by_alias",
+          "role": "author_alias",
+          "label": "COM_CONTENT_FIELD_CREATED_BY_ALIAS_LABEL",
+          "description": "COM_CONTENT_FIELD_CREATED_BY_ALIAS_DESC"
+        },
+        {
+          "name": "images",
+          "type": "embedded",
+          "input": "subform",
+          "label": "COM_CONTENT_ARTICLE_IMAGES_FIELDS_LABEL"
+        },
+        {
+          "name": "urls",
+          "type": "embedded",
+          "input": "subform",
+          "label": "COM_CONTENT_FIELD_URLS_OPTIONS"
+        },
+        {
+          "name": "attribs",
+          "type": "embedded",
+          "input": "subform",
+          "label": "COM_CONTENT_ATTRIBS_FIELDSET_LABEL"
+        },
+        {
+          "name": "ordering",
+          "role": "ordering"
+        },
+        {
+          "name": "access",
+          "role": "access"
+        },
+        {
+          "name": "hits",
+          "role": "hits",
+          "description": "COM_CONTENT_FIELD_HITS_DESC"
+        },
+        {
+          "name": "featured",
+          "role": "featured",
+          "description": "COM_CONTENT_FIELD_FEATURED_DESC"
+        },
+        {
+          "name": "xreference",
+          "type": "string",
+          "input": "string",
+          "label": "Reference",
+          "description": "A reference to enable linkages to external data sets"
+        }
+      ],
+      "relations": [
+        {
+          "name": "images",
+          "type": "hasMany",
+          "property": "images",
+          "entity": "Image",
+          "format": "json"
+        },
+        {
+          "name": "urls",
+          "type": "hasMany",
+          "property": "urls",
+          "entity": "URL",
+          "format": "json"
+        },
+        {
+          "name": "attribs",
+          "type": "hasOne",
+          "property": "attribs",
+          "entity": "Attributes",
+          "format": "json"
+        }
+      ]
+    },
+    {
+      "name": "Attributes",
+      "role": "config",
+      "storage": {
+        "type": "embedded"
+      },
+      "properties": [
+        {
+          "name": "show_title",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_TITLE_LABEL",
+          "description": "JGLOBAL_SHOW_TITLE_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "link_titles",
+          "input": "tristate",
+          "options": [
+            "global",
+            "no",
+            "yes"
+          ],
+          "label": "JGLOBAL_LINKED_TITLES_LABEL",
+          "description": "JGLOBAL_LINKED_TITLES_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_intro",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_INTRO_DESC",
+          "description": "JGLOBAL_SHOW_INTRO_LABEL",
+          "form": "basic"
+        },
+        {
+          "name": "info_block_position",
+          "input": "select",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "0",
+              "value": "above"
+            },
+            {
+              "key": "1",
+              "value": "below"
+            },
+            {
+              "key": "2",
+              "value": "split"
+            }
+          ],
+          "label": "COM_CONTENT_FIELD_INFOBLOCK_POSITION_LABEL",
+          "description": "COM_CONTENT_FIELD_INFOBLOCK_POSITION_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "info_block_show_title",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "COM_CONTENT_FIELD_INFOBLOCK_TITLE_LABEL",
+          "description": "COM_CONTENT_FIELD_INFOBLOCK_TITLE_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_item_navigation",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_NAVIGATION_LABEL",
+          "description": "JGLOBAL_SHOW_NAVIGATION_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_icons",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_ICONS_LABEL",
+          "description": "JGLOBAL_SHOW_ICONS_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_print_icon",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_PRINT_ICON_LABEL",
+          "description": "JGLOBAL_SHOW_PRINT_ICON_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_email_icon",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_EMAIL_ICON_LABEL",
+          "description": "JGLOBAL_SHOW_EMAIL_ICON_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_vote",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_VOTE_LABEL",
+          "description": "JGLOBAL_SHOW_VOTE_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_hits",
+          "input": "tristate",
+          "options": [
+            "global",
+            "hide",
+            "show"
+          ],
+          "label": "JGLOBAL_SHOW_HITS_LABEL",
+          "description": "JGLOBAL_SHOW_HITS_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_noauth",
+          "input": "tristate",
+          "options": [
+            "global",
+            "no",
+            "yes"
+          ],
+          "label": "JGLOBAL_SHOW_UNAUTH_LINKS_LABEL",
+          "description": "JGLOBAL_SHOW_UNAUTH_LINKS_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "urls_position",
+          "type": "integer",
+          "input": "select",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "0",
+              "value": "above"
+            },
+            {
+              "key": "1",
+              "value": "below"
+            }
+          ],
+          "label": "COM_CONTENT_FIELD_URLSPOSITION_LABEL",
+          "description": "COM_CONTENT_FIELD_URLSPOSITION_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "alternative_readmore",
+          "type": "string",
+          "input": "string",
+          "label": "JFIELD_READMORE_LABEL",
+          "description": "JFIELD_READMORE_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "article_layout",
+          "type": "string",
+          "input": "componentlayout",
+          "label": "JFIELD_ALT_LAYOUT_LABEL",
+          "description": "JFIELD_ALT_COMPONENT_LAYOUT_DESC",
+          "form": "basic"
+        },
+        {
+          "name": "show_article_options",
+          "input": "tristate",
+          "options": [
+            "global",
+            "no",
+            "yes"
+          ],
+          "label": "COM_CONTENT_SHOW_ARTICLE_OPTIONS_LABEL",
+          "description": "COM_CONTENT_SHOW_ARTICLE_OPTIONS_DESC",
+          "form": "editorConfig"
+        },
+        {
+          "name": "show_urls_images_backend",
+          "input": "tristate",
+          "options": [
+            "global",
+            "no",
+            "yes"
+          ],
+          "label": "COM_CONTENT_SHOW_IMAGES_URLS_BACK_LABEL",
+          "description": "COM_CONTENT_SHOW_IMAGES_URLS_BACK_DESC",
+          "form": "editorConfig"
+        },
+        {
+          "name": "show_urls_images_frontend",
+          "input": "tristate",
+          "options": [
+            "global",
+            "no",
+            "yes"
+          ],
+          "label": "COM_CONTENT_SHOW_IMAGES_URLS_FRONT_LABEL",
+          "description": "COM_CONTENT_SHOW_IMAGES_URLS_FRONT_DESC",
+          "form": "editorConfig"
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "role": "compound",
+      "storage": {
+        "type": "embedded"
+      },
+      "properties": [
+        {
+          "name": "image_intro",
+          "input": "media",
+          "label": "COM_CONTENT_FIELD_INTRO_LABEL",
+          "description": "COM_CONTENT_FIELD_INTRO_DESC"
+        },
+        {
+          "name": "float_intro",
+          "input": "select",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "right",
+              "value": "COM_CONTENT_RIGHT"
+            },
+            {
+              "key": "left",
+              "value": "COM_CONTENT_LEFT"
+            },
+            {
+              "key": "none",
+              "value": "COM_CONTENT_NONE"
+            }
+          ],
+          "label": "COM_CONTENT_FLOAT_LABEL",
+          "description": "COM_CONTENT_FLOAT_DESC"
+        },
+        {
+          "name": "image_intro_alt",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_IMAGE_ALT_LABEL",
+          "description": "COM_CONTENT_FIELD_IMAGE_ALT_DESC"
+        },
+        {
+          "name": "image_intro_caption",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL",
+          "description": "COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
+        },
+        {
+          "name": "image_fulltext",
+          "input": "media",
+          "label": "COM_CONTENT_FIELD_FULL_LABEL",
+          "description": "COM_CONTENT_FIELD_FULL_DESC"
+        },
+        {
+          "name": "float_fulltext",
+          "input": "select",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "right",
+              "value": "COM_CONTENT_RIGHT"
+            },
+            {
+              "key": "left",
+              "value": "COM_CONTENT_LEFT"
+            },
+            {
+              "key": "none",
+              "value": "COM_CONTENT_NONE"
+            }
+          ],
+          "label": "COM_CONTENT_FLOAT_LABEL",
+          "description": "COM_CONTENT_FLOAT_DESC"
+        },
+        {
+          "name": "image_fulltext_alt",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_IMAGE_ALT_LABEL",
+          "description": "COM_CONTENT_FIELD_IMAGE_ALT_DESC"
+        },
+        {
+          "name": "image_fulltext_caption",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL",
+          "description": "COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
+        }
+      ]
+    },
+    {
+      "name": "URL",
+      "role": "compound",
+      "storage": {
+        "type": "embedded"
+      },
+      "properties": [
+        {
+          "name": "urla",
+          "input": "url",
+          "label": "COM_CONTENT_FIELD_URLA_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_DESC"
+        },
+        {
+          "name": "urlatext",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_URLA_LINK_TEXT_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_LINK_TEXT_DESC"
+        },
+        {
+          "name": "targeta",
+          "input": "select",
+          "default": "",
+          "filter": "options",
+          "label": "COM_CONTENT_URL_FIELD_BROWSERNAV_LABEL",
+          "description": "COM_CONTENT_URL_FIELD_BROWSERNAV_DESC",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "0",
+              "value": "parent"
+            },
+            {
+              "key": "1",
+              "value": "new"
+            },
+            {
+              "key": "2",
+              "value": "popup"
+            },
+            {
+              "key": "3",
+              "value": "modal"
+            }
+          ]
+        },
+        {
+          "name": "urlb",
+          "input": "url",
+          "label": "COM_CONTENT_FIELD_URLB_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_DESC"
+        },
+        {
+          "name": "urlbtext",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_URLB_LINK_TEXT_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_LINK_TEXT_DESC"
+        },
+        {
+          "name": "targetb",
+          "input": "select",
+          "default": "",
+          "filter": "options",
+          "label": "COM_CONTENT_URL_FIELD_BROWSERNAV_LABEL",
+          "description": "COM_CONTENT_URL_FIELD_BROWSERNAV_DESC",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "0",
+              "value": "parent"
+            },
+            {
+              "key": "1",
+              "value": "new"
+            },
+            {
+              "key": "2",
+              "value": "popup"
+            },
+            {
+              "key": "3",
+              "value": "modal"
+            }
+          ]
+        },
+        {
+          "name": "urlc",
+          "input": "url",
+          "label": "COM_CONTENT_FIELD_URLC_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_DESC"
+        },
+        {
+          "name": "urlctext",
+          "input": "string",
+          "size": 20,
+          "label": "COM_CONTENT_FIELD_URLC_LINK_TEXT_LABEL",
+          "description": "COM_CONTENT_FIELD_URL_LINK_TEXT_DESC"
+        },
+        {
+          "name": "targetc",
+          "input": "select",
+          "default": "",
+          "filter": "options",
+          "label": "COM_CONTENT_URL_FIELD_BROWSERNAV_LABEL",
+          "description": "COM_CONTENT_URL_FIELD_BROWSERNAV_DESC",
+          "options": [
+            {
+              "key": "",
+              "value": "global"
+            },
+            {
+              "key": "0",
+              "value": "parent"
+            },
+            {
+              "key": "1",
+              "value": "new"
+            },
+            {
+              "key": "2",
+              "value": "popup"
+            },
+            {
+              "key": "3",
+              "value": "modal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

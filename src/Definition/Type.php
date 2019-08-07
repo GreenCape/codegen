@@ -19,6 +19,11 @@ class Type
     use ReadOnlyGuard;
 
     /**
+     * Provide a __toString implementation
+     */
+    use ToString;
+
+    /**
      * Type constructor.
      *
      * @param string|array $config
@@ -76,7 +81,7 @@ class Type
             case 'json':
                 $this->type  = 'string';
                 $this->len   = 255;
-                $this->input = 'text';
+                $this->input = 'textarea';
                 break;
 
             case 'password':

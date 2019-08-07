@@ -22,6 +22,7 @@ use RuntimeException;
  * @property $license
  * @property $authors
  * @property $entities
+ * @property $aggregateRoot
  */
 class Project
 {
@@ -105,6 +106,13 @@ class Project
     private $entities = [];
 
     /**
+     * The main entity of this project.
+     *
+     * @var Entity
+     */
+    private $aggregateRoot;
+
+    /**
      * The entity registry
      *
      * @var Registry
@@ -115,6 +123,11 @@ class Project
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
+
+    /**
+     * Provide a __toString implementation
+     */
+    use ToString;
 
     /**
      * Project constructor.
@@ -176,6 +189,10 @@ class Project
     {
         $entity->setProject($this);
         $this->entities[$entity->name] = $entity;
+
+        if ($entity->role === 'main') {
+            $this->aggregateRoot = $entity;
+        }
     }
 
     /**

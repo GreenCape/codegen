@@ -135,6 +135,10 @@ The information is defined in a JSON file, usually `project.json`.
 
 ### Storage Definition
 
++ `embedded`
+
+    The entity is aggregated into another entity
+    
 + `default`
 
     Requires the declaration of a `table` name.
@@ -298,7 +302,7 @@ The information is defined in a JSON file, usually `project.json`.
 
         A flag, whether the entity is published
 
-    - `created_by`
+    - `created_user`
 
         A foreign key to a user
 
@@ -314,16 +318,27 @@ The information is defined in a JSON file, usually `project.json`.
 
         An ordering number
     
-    - `created`
-    - `modified`
-    - `modified_by`
+    - `created_time`
+    - `modified_time`
+    - `modified_user`
+    - `checked_out_time`
+    - `checked_out_user`
     - `publish_up`
     - `publish_down`
-    - `attribs`
     - `version`
     - `introtext`
     - `fulltext`
     - `author_alias`
+    - `metakey`
+    - `metadesc`
+    - `metadata`
+    - `access`
+    
+        The view level
+        
+    - `hits`
+    
+        The number of views, i.e., how often the item was seen
 
 + `input`
 
@@ -370,6 +385,9 @@ The information is defined in a JSON file, usually `project.json`.
 + `default`
 + `position`
 + `form`
+
+    This allows to group fields into subforms. Default is `record`.
+    
 + `validation`
 + `index`
 
@@ -423,7 +441,7 @@ The information is defined in a JSON file, usually `project.json`.
 
 + `type`
 
-The type of relation, one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
+*Required.* The type of relation, one of 'belongsTo', 'hasMany', 'hasOne' or 'hasManyThru'.
 
 + `property`
 
@@ -440,6 +458,11 @@ The name of the related entity.
 + `map`
 
 *Optional.* For 'hasManyThru' relations, a `map` entity may be specified. If omitted and no `property` specified, the name of the mapping entity will be derived from the entities involved (entity names in alphabetic order with a 'Map' suffix).
+
++ `format`
+
+*Optional.* If set, `property` is expected to contain one (`hasOne`) or more (`hasMany`) entities encoded using the given format (JSON, csv).
+Will be ignored, if `reference` is provided.
 
 ### hasManyThru
 
@@ -466,4 +489,4 @@ An Article has many Tags. The relations are stored in an ArticleTagMap, which co
     }
 ```
 
-An Article has many Tags. The relations are stored in the `tag_ids` property of the Article, for example as a JSON string (details will be provided with the `tag_ids` property), which contains a list of tag "id"s.
+An Article has many Tags. The relations are stored in the `tag_ids` property of the Article, for example as a JSON string (details will be provided with the `tag_ids` property), which contains a list of tag `id`s.

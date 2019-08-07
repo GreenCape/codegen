@@ -83,6 +83,13 @@ class Entity
     private $properties = [];
 
     /**
+     * A list of forms, i.e., field groups.
+     *
+     * @var []
+     */
+    private $forms = [];
+
+    /**
      * Properties may have a special meaning, expressed by their role. All properties with a role are collected in
      * special, so it is possible to access the properties by role.
      *
@@ -129,6 +136,11 @@ class Entity
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
+
+    /**
+     * Provide a __toString implementation
+     */
+    use ToString;
 
     /**
      * Entity constructor.
@@ -199,6 +211,19 @@ class Entity
         if (!empty($property->getPosition())) {
             $this->listFields[$property->getPosition()] = $property;
         }
+
+        if (!empty($property->getForm())) {
+            if (!isset($this->forms[$property->getForm()])) {
+                $this->forms[$property->getForm()] = [
+                    'name' => $property->getForm(),
+                    'properties' => [$property]
+                ];
+            }
+            else
+            {
+                $this->forms[$property->getForm()]['properties'][] = $property;
+            }
+        }
     }
 
     /**
@@ -229,7 +254,11 @@ class Entity
                 break;
 
             case 'hasManyThru':
-                #throw new RuntimeException('Not yet implemented');
+                $this->details[] = [
+                    'entity'    => $relation->getEntity(),
+                    'map'       => $relation->getMap(),
+                    'reference' => $relation->getReference(),
+                ];
                 break;
 
             default:

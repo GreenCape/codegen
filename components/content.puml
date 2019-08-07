@@ -1,0 +1,62 @@
+@startuml
+class Article {
+    id: key
+    title: title
+}
+
+class Asset {
+    id: key
+}
+
+Article "1" --> "1" Asset: asset_id
+
+class Category {
+    id: key
+    title: title
+}
+
+Article "n" --> "1" Category: catid
+
+class User {
+    id: key
+    realname: title
+}
+
+Article "n" --> "1" User: created_by
+Article "n" --> "1" User: modified_by
+Article "n" --> "1" User: checked_out
+
+class Image {
+}
+
+Article "4" o--> "1" Image: images
+note on link: Serialised\nRegistry
+
+class URL {
+}
+
+Article "3" o--> "1" URL: urls
+note on link: Serialised\nRegistry
+
+class Attribute {
+}
+
+Article "3" o--> "1" Attribute: attribs
+note on link: Serialised\nRegistry
+
+class Tag {
+    id: key
+    title: title
+}
+
+class ContentitemTag {
+    type_alias
+    core_content_id
+    content_item_id
+    tag_id
+    tag_date
+    type_id
+}
+
+(Article, Tag) .. ContentitemTag
+@enduml

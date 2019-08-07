@@ -65,6 +65,15 @@ class Relation
     private $map;
 
     /**
+     * *Optional.* If set, `property` is expected to contain one (`hasOne`) or more
+     * (`hasMany`) entities encoded using the given format (JSON, csv).
+     * Will be ignored, if `reference` is provided.
+     *
+     * @var string
+     */
+    private $format;
+
+    /**
      * The entity registry
      *
      * @var Registry
@@ -75,6 +84,11 @@ class Relation
      * Allow read access to non-public members
      */
     use ReadOnlyGuard;
+
+    /**
+     * Provide a __toString implementation
+     */
+    use ToString;
 
     /**
      * Relation constructor.
@@ -124,8 +138,13 @@ class Relation
 
         $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties) {
             $this->entity = $entity;
+
             if (empty($properties['reference'])) {
-                $this->reference = $entity->getSpecial()['key'];
+                if (!empty($properties['format'])) {
+                    $this->format = $properties['format'];
+                } else {
+                    $this->reference = $entity->getSpecial()['key'];
+                }
             } else {
                 $entity->getProperties()[$properties['reference']];
             }
