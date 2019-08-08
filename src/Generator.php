@@ -6,8 +6,6 @@ use Exception;
 use FilesystemIterator;
 use GreenCape\CodeGen\Definition\Entity;
 use GreenCape\CodeGen\Definition\Project;
-use GreenCape\CodeGen\Definition\Property;
-use GreenCape\CodeGen\Definition\Relation;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -152,6 +150,7 @@ class Generator
     private function render(Template $template, $source, Entity $entity = null): void
     {
         $destination = $this->getDestinationPath($source, $entity);
+        $destination = preg_replace('/.twig$/', '', $destination);
 
         if (is_dir($source)) {
             if (!@mkdir($destination, 0777, true) && !is_dir($destination)) {

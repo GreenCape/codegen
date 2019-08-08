@@ -36,7 +36,7 @@ class Entity
 
     /**
      * Optional. The function of this entity (table). If omitted, no special treatment is conducted.
-     * Valid values are 'main', 'lookup', 'map' or nothing.
+     * Valid values are 'main', 'lookup', 'map', 'embedded' or nothing.
      *
      * @var string
      */
