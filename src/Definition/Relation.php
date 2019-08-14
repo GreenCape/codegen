@@ -74,6 +74,11 @@ class Relation
     private $format;
 
     /**
+     * @var string
+     */
+    private $constraint;
+
+    /**
      * The entity registry
      *
      * @var Registry
@@ -120,6 +125,7 @@ class Relation
         }
 
         $this->type = $properties['type'];
+        $this->constraint = $properties['constraint'] ?? '';
 
         if (empty($properties['property'])) {
             $this->property = $current->getSpecial()['key'];
@@ -136,7 +142,7 @@ class Relation
         $this->entity    = new Entity(['name' => $properties['entity']]);
         $this->reference = new Property(['name' => $properties['reference'] ?? 'id']);
 
-        $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties) {
+        $this->registry->registerCallback($properties['entity'], function (Entity $entity) use ($properties, $current) {
             $this->entity = $entity;
 
             if (empty($properties['reference'])) {
@@ -146,7 +152,11 @@ class Relation
                     $this->reference = $entity->getSpecial()['key'];
                 }
             } else {
-                $entity->getProperties()[$properties['reference']];
+                if (is_string($properties['reference'])) {
+                    $entity->getProperties()[$properties['reference']];
+                } else {
+                    throw new Exception("Relation definition error: 'reference' must be a string or an array (defined in entity {$current->getName()}, relation {$this->type} {$this->name})");
+                }
             }
         });
 
@@ -173,6 +183,14 @@ class Relation
     public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConstraint(): string
+    {
+        return $this->constraint;
     }
 
     /**

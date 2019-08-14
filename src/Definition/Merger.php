@@ -54,10 +54,10 @@ class Merger
      */
     private function addFeature($entity, $addition, $key): void
     {
-        if (!empty($addition['include']) && !in_array($entity['role'], $addition['include'], true)) {
+        if (!empty($addition['include']) && !in_array($entity['role'] ?? '', $addition['include'], true)) {
             return;
         }
-        if (!empty($addition['exclude']) && in_array($entity['role'], $addition['exclude'], true)) {
+        if (!empty($addition['exclude']) && in_array($entity['role'] ?? '', $addition['exclude'], true)) {
             return;
         }
         if (empty($addition['name'])) {

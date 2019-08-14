@@ -1,0 +1,51 @@
+{
+  "categories": {
+    "entities": [
+      {
+        "include": [
+          "main"
+        ],
+        "filters": [
+          "catid"
+        ],
+        "properties": [
+          {
+            "name": "catid",
+            "role": "category"
+          }
+        ],
+        "relations": [
+          {
+            "name": "category",
+            "type": "belongsTo",
+            "property": "catid",
+            "entity": "Category",
+            "reference": "id"
+          }
+        ]
+      },
+      {
+        "name": "Category",
+        "storage": {
+          "type": "default",
+          "table": "categories"
+        },
+        "properties": [
+          {
+            "name": "id",
+            "role": "key"
+          },
+          {
+            "name": "title",
+            "role": "title",
+            "position": 1
+          },
+          {
+            "name": "level",
+            "position": 2
+          }
+        ]
+      }
+    ]
+  }
+}

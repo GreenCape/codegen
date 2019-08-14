@@ -5,11 +5,11 @@ namespace GreenCape\CodeGen\Tests\Unit;
 use GreenCape\CodeGen\Definition\Property;
 use GreenCape\CodeGen\Definition\Type;
 use PHPUnit\Framework\TestCase;
-use Twig_Environment;
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
-use Twig_Loader_Filesystem;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Loader\FilesystemLoader;
 
 class TypeTest extends TestCase
 {
@@ -84,9 +84,9 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function testSelectOptionsAsStrings(): void
     {
@@ -98,7 +98,7 @@ class TypeTest extends TestCase
                 'bar',
             ],
         ]);
-        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Environment(new FilesystemLoader(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 
@@ -112,9 +112,9 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function testSelectOptionsAsArray(): void
     {
@@ -132,7 +132,7 @@ class TypeTest extends TestCase
                 ],
             ],
         ]);
-        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Environment(new FilesystemLoader(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 
@@ -211,7 +211,7 @@ class TypeTest extends TestCase
                 [
                     'type'       => 'string',
                     'len'        => 255,
-                    'input'      => 'text',
+                    'input'      => 'textarea',
                     'role'       => '',
                     'index'      => '',
                     'validation' => [],
@@ -292,9 +292,9 @@ class TypeTest extends TestCase
      * @param $declaredType
      * @param $expected
      *
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function testDefaults($declaredType, $expected): void
     {
@@ -302,7 +302,7 @@ class TypeTest extends TestCase
             'name' => 'test_property',
             'type' => $declaredType,
         ]);
-        $twig     = new Twig_Environment(new Twig_Loader_Filesystem(['tests/fixtures']));
+        $twig     = new Environment(new FilesystemLoader(['tests/fixtures']));
         $rendered = $twig->render('dumpProperty.json', ['property' => $property]);
         $result   = json_decode($rendered, true);
 
@@ -313,5 +313,14 @@ class TypeTest extends TestCase
         $this->assertEquals($expected['index'], $result['index']);
         $this->assertEquals($expected['input'], $result['input']);
         $this->assertEquals($expected['validation'], $result['validation']);
+    }
+
+    public function testToString()
+    {
+        $type = new Type('string');
+        $string = (string) $type;
+
+        $this->assertStringStartsWith('Type Object', $string);
+        $this->assertContains('[type:Type:private]: string', $string);
     }
 }

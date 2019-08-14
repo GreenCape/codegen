@@ -41,10 +41,19 @@ class Swagger
         $volume  = "--volume {$dir}:/local";
         $image   = 'swaggerapi/swagger-codegen-cli';
         $version = '2.4.7';
+        $container     = "temp_swagger";
 
-        $dockerCommand = "docker run --rm {$volume} --user {$userId} --name temp_swagger {$image}:{$version} {$command} {$paramString} 2>&1";
+        $dockerCommand = "docker run --rm {$volume} --user {$userId} --name {$container} {$image}:{$version} {$command} {$paramString} 2>&1";
 
-        return shell_exec($dockerCommand);
+        $output = shell_exec($dockerCommand);
+
+        // Retry in case of container being left over from last run
+        if (preg_match("~The container name \"/{$container}\" is already in use~", $output)) {
+            shell_exec("docker rm {$container}");
+            $output = shell_exec($dockerCommand);
+        }
+
+        return $output;
     }
 
     /**
